@@ -127,4 +127,28 @@ class SettingTest extends TestCase
 
         $response->assertSessionHasErrors('store_logo');
     }
+
+    public function test_admin_can_update_store_whatsapp(): void
+    {
+        $response = $this->actingAs($this->admin)->post(route('admin.settings.update'), [
+            'store_name' => 'BN Boutique',
+            'store_whatsapp' => '6289999999999',
+        ]);
+
+        $response->assertRedirect(route('admin.settings.edit'));
+        $response->assertSessionHas('success');
+
+        Setting::clearCache();
+        $this->assertEquals('6289999999999', Setting::get('store_whatsapp'));
+    }
+
+    public function test_store_whatsapp_must_be_digits(): void
+    {
+        $response = $this->actingAs($this->admin)->post(route('admin.settings.update'), [
+            'store_name' => 'BN Boutique',
+            'store_whatsapp' => '+62-899-999-999',
+        ]);
+
+        $response->assertSessionHasErrors('store_whatsapp');
+    }
 }

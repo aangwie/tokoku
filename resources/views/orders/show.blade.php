@@ -137,7 +137,7 @@
 
                                 @php
                                     $storeName = \App\Models\Setting::get('store_name', config('app.name', 'Toko Online'));
-                                    $waNumber = '6281234567890';
+                                    $waNumber = preg_replace('/[^0-9]/', '', \App\Models\Setting::get('store_whatsapp', '6281234567890'));
                                     $firstBank = count($bankAccounts) > 0 ? $bankAccounts[0] : null;
                                     $bankInfo = $firstBank ? ($firstBank['bank_name'] . ' ' . $firstBank['account_number']) : 'rekening toko';
                                     $waMessage = urlencode("Halo Admin {$storeName},\n\nSaya ingin konfirmasi pembayaran untuk:\n📦 No. Pesanan: {$order->order_number}\n💰 Total: Rp " . number_format($order->total_price, 0, ',', '.') . "\n\nSudah saya transfer ke {$bankInfo}.\nMohon diproses. Terima kasih! 🙏");

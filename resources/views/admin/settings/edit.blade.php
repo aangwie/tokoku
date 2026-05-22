@@ -23,7 +23,7 @@
                         </div>
                         <div>
                             <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Konfigurasi Umum</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Atur nama dan logo toko Anda</p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Atur nama, WhatsApp konfirmasi, dan logo toko Anda</p>
                         </div>
                     </div>
 
@@ -46,6 +46,26 @@
                                 required
                             />
                             @error('store_name')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Store WhatsApp Confirmation --}}
+                        <div class="mb-8">
+                            <label for="store_whatsapp" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Nomor WhatsApp Konfirmasi Pembayaran
+                            </label>
+                            <input
+                                type="text"
+                                name="store_whatsapp"
+                                id="store_whatsapp"
+                                value="{{ old('store_whatsapp', $settings['store_whatsapp']) }}"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 px-4 py-3"
+                                placeholder="Contoh: 6281234567890"
+                                required
+                            />
+                            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Nomor WhatsApp tujuan yang digunakan untuk konfirmasi pembayaran manual oleh pembeli. Gunakan format angka saja dengan kode negara di awal (contoh: 6281234567890).</p>
+                            @error('store_whatsapp')
                                 <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>

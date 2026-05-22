@@ -24,6 +24,7 @@ class SettingController extends Controller
     {
         $settings = [
             'store_name' => Setting::get('store_name', config('app.name')),
+            'store_whatsapp' => Setting::get('store_whatsapp', '6281234567890'),
             'store_logo' => Setting::get('store_logo'),
             'payment_method' => Setting::get('payment_method', 'paymentgateway'),
 
@@ -50,6 +51,7 @@ class SettingController extends Controller
     {
         $request->validate([
             'store_name' => 'required|string|max:255',
+            'store_whatsapp' => 'nullable|string|max:20|regex:/^[0-9]+$/',
             'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
             'payment_method' => 'nullable|in:paymentgateway,transfer',
 
@@ -71,6 +73,9 @@ class SettingController extends Controller
 
         // Update store name
         Setting::set('store_name', $request->store_name);
+
+        // Update store whatsapp
+        Setting::set('store_whatsapp', $request->input('store_whatsapp', ''));
 
         // Update payment method
         $paymentMethod = $request->payment_method ?? 'paymentgateway';
