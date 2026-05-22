@@ -1,0 +1,16 @@
+{
+  "name": "whatsapp-gateway",
+  "version": "1.0.0",
+  "description": "WhatsApp Gateway menggunakan Baileys untuk Toko Online",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.16",
+    "express": "^4.21.0",
+    "pino": "^9.5.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
