@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CustomerSettingController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -44,12 +45,26 @@ Route::middleware('auth')->group(function () {
 
 /*
 |--------------------------------------------------------------------------
-| Customer Order Routes (Auth Required)
+| Customer Order & Settings Routes (Auth Required)
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+
+    // Pengaturan Pelanggan
+    Route::get('/settings', [CustomerSettingController::class, 'index'])->name('customer.settings');
+    Route::put('/settings/profile', [CustomerSettingController::class, 'updateProfile'])->name('customer.profile.update');
+
+    // Alamat Pengiriman
+    Route::post('/settings/address', [CustomerSettingController::class, 'storeAddress'])->name('customer.address.store');
+    Route::put('/settings/address/{address}', [CustomerSettingController::class, 'updateAddress'])->name('customer.address.update');
+    Route::delete('/settings/address/{address}', [CustomerSettingController::class, 'destroyAddress'])->name('customer.address.destroy');
+
+    // Rekening Bank Pengembalian Dana
+    Route::post('/settings/bank-account', [CustomerSettingController::class, 'storeBankAccount'])->name('customer.bank.store');
+    Route::put('/settings/bank-account/{bankAccount}', [CustomerSettingController::class, 'updateBankAccount'])->name('customer.bank.update');
+    Route::delete('/settings/bank-account/{bankAccount}', [CustomerSettingController::class, 'destroyBankAccount'])->name('customer.bank.destroy');
 });
 
 /*

@@ -15,7 +15,10 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div x-data="{ sidebarOpen: window.innerWidth >= 1024, sidebarMinimized: localStorage.getItem('sidebarMinimized') === 'true' }" class="min-h-screen bg-gradient-to-br from-[#91ebff] to-white flex">
+        <div x-data="{
+                sidebarOpen: localStorage.getItem('sidebarOpen') !== null ? localStorage.getItem('sidebarOpen') === 'true' : window.innerWidth >= 1024,
+                sidebarMinimized: localStorage.getItem('sidebarMinimized') === 'true'
+            }" class="min-h-screen bg-gradient-to-br from-[#91ebff] to-white flex">
             <!-- Sidebar Layout -->
             @include('layouts.sidebar')
 
@@ -25,7 +28,7 @@
                 <div class="sticky top-0 z-20 flex items-center justify-between h-16 bg-white dark:bg-gray-800 px-6 border-b border-gray-100 dark:border-gray-700 shrink-0">
                     <!-- Left Side: Toggle & Dynamic Brand -->
                     <div class="flex items-center gap-4">
-                        <button @click="sidebarOpen = !sidebarOpen" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white focus:outline-none transition duration-150">
+                        <button @click="sidebarOpen = !sidebarOpen; localStorage.setItem('sidebarOpen', sidebarOpen)" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white focus:outline-none transition duration-150">
                             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                             </svg>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Setting;
+use App\Services\MidtransService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -48,12 +50,15 @@ class OrderController extends Controller
         // Eager load semua relasi yang dibutuhkan di halaman detail
         $order->load(['user', 'coupon', 'orderItems.product']);
 
-        // Siapkan Midtrans client key jika payment gateway-nya Midtrans
+        // Siapkan Midtrans client key jika payment gateway-nya Midtrans (dari database)
         $midtransClientKey = null;
         if ($order->payment_gateway === 'midtrans') {
-            $midtransClientKey = config('services.midtrans.client_key');
+            $midtransClientKey = MidtransService::getClientKey();
         }
 
-        return view('orders.show', compact('order', 'midtransClientKey'));
+        // Ambil daftar rekening bank dari database untuk transfer
+        $bankAccounts = json_decode(Setting::get('bank_accounts', '[]'), true) ?: [];
+
+        return view('orders.show', compact('order', 'midtransClientKey', 'bankAccounts'));
     }
 }

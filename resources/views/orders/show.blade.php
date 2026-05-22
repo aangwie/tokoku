@@ -1,4 +1,4 @@
-<x-customer-layout>
+<x-app-layout>
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
 
         {{-- Back Link --}}
@@ -72,37 +72,52 @@
                                     </div>
                                     <div>
                                         <h3 class="font-bold text-gray-900 dark:text-white text-base">Instruksi Pembayaran Transfer Bank</h3>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Silakan transfer ke rekening berikut</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Silakan transfer ke salah satu rekening berikut</p>
                                     </div>
                                 </div>
 
-                                <div class="bg-white dark:bg-gray-800 rounded-lg border border-blue-100 dark:border-blue-900 p-5 mb-4">
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                            <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Bank</span>
-                                            <span class="font-bold text-gray-900 dark:text-white text-lg">Bank Central Asia (BCA)</span>
-                                        </div>
-                                        <div>
-                                            <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">No. Rekening</span>
-                                            <div class="flex items-center gap-2">
-                                                <span class="font-bold text-indigo-600 dark:text-indigo-400 text-lg tracking-wider" id="bank-account-number">123-456-7890</span>
-                                                <button type="button" onclick="copyAccountNumber()" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Salin nomor rekening">
-                                                    <svg class="w-4 h-4 text-gray-400 hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                    </svg>
-                                                </button>
+                                @if(count($bankAccounts) > 0)
+                                    <div class="space-y-3 mb-4">
+                                        @foreach($bankAccounts as $idx => $bank)
+                                            <div class="bg-white dark:bg-gray-800 rounded-lg border border-blue-100 dark:border-blue-900 p-5">
+                                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                                    <div>
+                                                        <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Bank</span>
+                                                        <span class="font-bold text-gray-900 dark:text-white text-lg">{{ $bank['bank_name'] }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">No. Rekening</span>
+                                                        <div class="flex items-center gap-2">
+                                                            <span class="font-bold text-indigo-600 dark:text-indigo-400 text-lg tracking-wider bank-account-number">{{ $bank['account_number'] }}</span>
+                                                            <button type="button" onclick="copyText('{{ $bank['account_number'] }}')" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Salin nomor rekening">
+                                                                <svg class="w-4 h-4 text-gray-400 hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Atas Nama</span>
+                                                        <span class="font-medium text-gray-900 dark:text-white">{{ $bank['account_holder'] }}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Jumlah Transfer</span>
+                                                        <span class="font-extrabold text-green-600 dark:text-green-400 text-lg">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div>
-                                            <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Atas Nama</span>
-                                            <span class="font-medium text-gray-900 dark:text-white">BN Boutique</span>
-                                        </div>
-                                        <div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    {{-- Fallback if no bank accounts configured --}}
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg border border-blue-100 dark:border-blue-900 p-5 mb-4">
+                                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Rekening bank belum dikonfigurasi oleh admin. Silakan hubungi admin untuk informasi pembayaran.</p>
+                                        <div class="mt-3 text-center">
                                             <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">Jumlah Transfer</span>
                                             <span class="font-extrabold text-green-600 dark:text-green-400 text-lg">Rp {{ number_format($order->total_price, 0, ',', '.') }}</span>
                                         </div>
                                     </div>
-                                </div>
+                                @endif
 
                                 <div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4 text-sm">
                                     <div class="flex items-start gap-2">
@@ -121,8 +136,11 @@
                                 </div>
 
                                 @php
+                                    $storeName = \App\Models\Setting::get('store_name', config('app.name', 'Toko Online'));
                                     $waNumber = '6281234567890';
-                                    $waMessage = urlencode("Halo Admin BN Boutique,\n\nSaya ingin konfirmasi pembayaran untuk:\n📦 No. Pesanan: {$order->order_number}\n💰 Total: Rp " . number_format($order->total_price, 0, ',', '.') . "\n\nSudah saya transfer ke rekening BCA 123-456-7890.\nMohon diproses. Terima kasih! 🙏");
+                                    $firstBank = count($bankAccounts) > 0 ? $bankAccounts[0] : null;
+                                    $bankInfo = $firstBank ? ($firstBank['bank_name'] . ' ' . $firstBank['account_number']) : 'rekening toko';
+                                    $waMessage = urlencode("Halo Admin {$storeName},\n\nSaya ingin konfirmasi pembayaran untuk:\n📦 No. Pesanan: {$order->order_number}\n💰 Total: Rp " . number_format($order->total_price, 0, ',', '.') . "\n\nSudah saya transfer ke {$bankInfo}.\nMohon diproses. Terima kasih! 🙏");
                                 @endphp
 
                                 <a href="https://wa.me/{{ $waNumber }}?text={{ $waMessage }}" target="_blank" rel="noopener noreferrer"
@@ -277,7 +295,13 @@
 
     {{-- Midtrans Snap JS (only for pending midtrans orders) --}}
     @if($order->status === 'pending' && $order->payment_gateway === 'midtrans' && $order->payment_reference)
-        <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ $midtransClientKey }}"></script>
+        @php
+            $midtransIsProduction = \App\Models\Setting::get('midtrans_is_production', '0');
+            $snapUrl = ($midtransIsProduction === '1')
+                ? 'https://app.midtrans.com/snap/snap.js'
+                : 'https://app.sandbox.midtrans.com/snap/snap.js';
+        @endphp
+        <script src="{{ $snapUrl }}" data-client-key="{{ $midtransClientKey }}"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 const payBtn = document.getElementById('pay-midtrans-btn');
@@ -326,9 +350,8 @@
     @endif
 
     <script>
-        function copyAccountNumber() {
-            const accountNumber = document.getElementById('bank-account-number').textContent.trim();
-            navigator.clipboard.writeText(accountNumber).then(() => {
+        function copyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
                 if (window.Swal) {
                     window.Swal.fire({
                         title: 'Tersalin!',
@@ -348,4 +371,4 @@
             });
         }
     </script>
-</x-customer-layout>
+</x-app-layout>

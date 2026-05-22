@@ -7,12 +7,57 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {{-- Shipping Address --}}
                 <div class="space-y-6">
-                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6" x-data="addressSelector()">
                         <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                             <svg class="w-5 h-5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                             Alamat Pengiriman
                         </h2>
-                        <textarea name="shipping_address" rows="4" required
+
+                        {{-- Saved Addresses --}}
+                        @php
+                            $savedAddresses = \App\Models\CustomerAddress::where('user_id', auth()->id())
+                                ->orderBy('is_default', 'desc')
+                                ->orderBy('created_at', 'desc')
+                                ->get();
+                        @endphp
+
+                        @if($savedAddresses->count() > 0)
+                            <div class="space-y-2 mb-4">
+                                <p class="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Pilih alamat tersimpan</p>
+                                @foreach($savedAddresses as $sa)
+                                    <label class="block p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:border-indigo-300"
+                                           :class="selectedAddress === {{ $sa->id }} ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20' : 'border-gray-200 dark:border-gray-700'">
+                                        <div class="flex items-start gap-3">
+                                            <input type="radio" name="address_choice" value="{{ $sa->id }}"
+                                                   @click="selectSaved({{ $sa->id }}, {{ json_encode($sa->recipient_name . ' (' . $sa->phone . ")\n" . $sa->full_address) }})"
+                                                   class="mt-1 text-indigo-600 focus:ring-indigo-500"
+                                                   {{ $sa->is_default ? 'checked' : '' }}>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="font-bold text-sm text-gray-900 dark:text-white">{{ $sa->label }}</span>
+                                                    @if($sa->is_default)
+                                                        <span class="text-[10px] px-1.5 py-0.5 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-300 font-bold rounded">Utama</span>
+                                                    @endif
+                                                </div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-0.5">{{ $sa->recipient_name }} · {{ $sa->phone }}</p>
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5 line-clamp-2">{{ $sa->full_address }}</p>
+                                            </div>
+                                        </div>
+                                    </label>
+                                @endforeach
+                                <label class="block p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:border-indigo-300"
+                                       :class="selectedAddress === 'manual' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20' : 'border-gray-200 dark:border-gray-700'">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="address_choice" value="manual"
+                                               @click="selectManual()"
+                                               class="text-indigo-600 focus:ring-indigo-500">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">✍️ Tulis alamat baru</span>
+                                    </div>
+                                </label>
+                            </div>
+                        @endif
+
+                        <textarea name="shipping_address" rows="4" required x-ref="addressInput"
                             placeholder="Masukkan alamat lengkap pengiriman (Nama penerima, No. HP, Alamat, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos)"
                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm resize-none">{{ old('shipping_address') }}</textarea>
                         @error('shipping_address')
@@ -152,6 +197,43 @@
     </div>
 
     <script>
+        function addressSelector() {
+            return {
+                selectedAddress: null,
+                init() {
+                    const checkedRadio = this.$el.querySelector('input[name="address_choice"]:checked');
+                    if (checkedRadio) {
+                        const val = checkedRadio.value;
+                        if (val === 'manual') {
+                            this.selectedAddress = 'manual';
+                        } else {
+                            this.selectedAddress = parseInt(val);
+                            @if($savedAddresses->count() > 0)
+                                const defaultAddr = @json($savedAddresses->firstWhere('is_default', true) ?? $savedAddresses->first());
+                                if (defaultAddr && defaultAddr.id === this.selectedAddress) {
+                                    this.$refs.addressInput.value = defaultAddr.recipient_name + ' (' + defaultAddr.phone + ')\n' + defaultAddr.full_address;
+                                    this.$refs.addressInput.readOnly = true;
+                                }
+                            @endif
+                        }
+                    } else {
+                        this.selectedAddress = 'manual';
+                    }
+                },
+                selectSaved(id, text) {
+                    this.selectedAddress = id;
+                    this.$refs.addressInput.value = text;
+                    this.$refs.addressInput.readOnly = true;
+                },
+                selectManual() {
+                    this.selectedAddress = 'manual';
+                    this.$refs.addressInput.value = '';
+                    this.$refs.addressInput.readOnly = false;
+                    this.$refs.addressInput.focus();
+                }
+            };
+        }
+
         function confirmCheckout() {
             const form = document.getElementById('checkout-form');
             const address = form.querySelector('textarea[name="shipping_address"]');

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -11,6 +12,9 @@ use Illuminate\Support\Facades\Log;
  *
  * Menangani pembuatan snap token untuk pembayaran
  * dan verifikasi signature dari webhook notification.
+ *
+ * Kredensial dibaca dari database (Setting model) dengan
+ * fallback ke config/env jika belum diatur di database.
  */
 class MidtransService
 {
@@ -26,12 +30,27 @@ class MidtransService
 
     public function __construct()
     {
+        // Baca environment dari database, fallback ke config
+        $isProduction = Setting::get('midtrans_is_production', config('services.midtrans.is_production', false) ? '1' : '0');
+
         // Tentukan URL berdasarkan environment (sandbox vs production)
-        $this->baseUrl = config('services.midtrans.is_production')
+        $this->baseUrl = ($isProduction === '1' || $isProduction === true)
             ? 'https://app.midtrans.com/snap/v1/transactions'
             : 'https://app.sandbox.midtrans.com/snap/v1/transactions';
 
-        $this->serverKey = config('services.midtrans.server_key');
+        // Baca server key dari database, fallback ke config
+        $this->serverKey = Setting::get('midtrans_server_key', config('services.midtrans.server_key'));
+    }
+
+    /**
+     * Ambil client key Midtrans dari database/config.
+     *
+     * Static helper agar bisa dipanggil dari controller
+     * tanpa perlu instance MidtransService.
+     */
+    public static function getClientKey(): string
+    {
+        return Setting::get('midtrans_client_key', config('services.midtrans.client_key', ''));
     }
 
     /**

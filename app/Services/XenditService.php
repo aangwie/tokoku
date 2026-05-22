@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,9 @@ use Illuminate\Support\Facades\Log;
  *
  * Menangani pembuatan invoice untuk pembayaran
  * dan verifikasi callback token dari webhook.
+ *
+ * Kredensial dibaca dari database (Setting model) dengan
+ * fallback ke config/env jika belum diatur di database.
  */
 class XenditService
 {
@@ -32,8 +36,9 @@ class XenditService
 
     public function __construct()
     {
-        $this->apiKey = config('services.xendit.api_key');
-        $this->callbackToken = config('services.xendit.callback_token');
+        // Baca kredensial dari database, fallback ke config/env
+        $this->apiKey = Setting::get('xendit_api_key', config('services.xendit.api_key'));
+        $this->callbackToken = Setting::get('xendit_callback_token', config('services.xendit.callback_token'));
     }
 
     /**
