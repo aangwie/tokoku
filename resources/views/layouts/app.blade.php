@@ -72,7 +72,7 @@
                         </a>
 
                         <span class="hidden md:inline text-xs font-medium text-gray-500 dark:text-gray-400">
-                            {{ now()->format('l, d F Y') }}
+                            {{ \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y') }}
                         </span>
 
                         <div class="h-5 w-px bg-gray-200 dark:bg-gray-600"></div>
