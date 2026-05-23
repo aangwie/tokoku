@@ -154,7 +154,18 @@
 
             // Confirm for destructive actions
             if (['pull-update', 'run-migrations', 'composer-update'].includes(action)) {
-                if (!confirm(`Apakah Anda yakin ingin menjalankan ${actionData.label}?`)) {
+                const result = await Swal.fire({
+                    title: 'Konfirmasi',
+                    text: `Apakah Anda yakin ingin menjalankan ${actionData.label}?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4f46e5',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Jalankan!',
+                    cancelButtonText: 'Batal'
+                });
+                
+                if (!result.isConfirmed) {
                     return;
                 }
             }
@@ -179,12 +190,38 @@
                     if (result.message) {
                         addToTerminal('\n✓ ' + result.message, 'success');
                     }
+                    
+                    // Show success notification
+                    Swal.fire({
+                        title: 'Berhasil!',
+                        text: result.message || `${actionData.label} berhasil dijalankan`,
+                        icon: 'success',
+                        confirmButtonColor: '#4f46e5',
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
                 } else {
                     addToTerminal('\n' + (result.output || ''), 'error');
                     addToTerminal('\n✗ ' + (result.message || 'Operation failed'), 'error');
+                    
+                    // Show error notification
+                    Swal.fire({
+                        title: 'Gagal!',
+                        text: result.message || 'Operasi gagal dijalankan',
+                        icon: 'error',
+                        confirmButtonColor: '#ef4444'
+                    });
                 }
             } catch (error) {
                 addToTerminal('\n✗ Error: ' + error.message, 'error');
+                
+                // Show error notification
+                Swal.fire({
+                    title: 'Error!',
+                    text: error.message || 'Terjadi kesalahan saat menjalankan operasi',
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444'
+                });
             } finally {
                 disableButtons(false);
                 addToTerminal('\n$ Ready for next command\n', 'command');
