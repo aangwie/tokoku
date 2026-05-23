@@ -13,7 +13,7 @@
     <!-- Links -->
     <div class="flex-grow overflow-y-auto px-4 py-6 space-y-1.5">
         <!-- Lihat Toko -->
-        <a href="{{ route('home') }}" class="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white" :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
+        <a href="{{ route('home') }}" class="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white" :class="sidebarMinimized ? 'justify-center' : 'gap-3'" target="_blank">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span x-show="!sidebarMinimized">Lihat Toko</span>
         </a>
