@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\AdminProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\SystemUpdateController as AdminSystemUpdateController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -100,6 +101,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/settings/profile', [AdminProfileController::class, 'edit'])->name('settings.profile.edit');
     Route::patch('/settings/profile', [AdminProfileController::class, 'update'])->name('settings.profile.update');
     Route::put('/settings/profile/password', [AdminProfileController::class, 'updatePassword'])->name('settings.profile.updatePassword');
+
+    // System Update
+    Route::get('/system', [AdminSystemUpdateController::class, 'index'])->name('system.index');
+    Route::post('/system/save-settings', [AdminSystemUpdateController::class, 'saveSettings'])->name('system.saveSettings');
+    Route::post('/system/pull-update', [AdminSystemUpdateController::class, 'pullUpdate'])->name('system.pullUpdate');
+    Route::post('/system/clear-cache', [AdminSystemUpdateController::class, 'clearCache'])->name('system.clearCache');
+    Route::post('/system/run-migrations', [AdminSystemUpdateController::class, 'runMigrations'])->name('system.runMigrations');
+    Route::post('/system/optimize', [AdminSystemUpdateController::class, 'optimize'])->name('system.optimize');
+    Route::post('/system/composer-update', [AdminSystemUpdateController::class, 'composerUpdate'])->name('system.composerUpdate');
+    Route::post('/system/info', [AdminSystemUpdateController::class, 'systemInfo'])->name('system.info');
 });
 
 /*
