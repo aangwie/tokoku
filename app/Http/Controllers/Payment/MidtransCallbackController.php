@@ -69,7 +69,8 @@ class MidtransCallbackController extends Controller
      */
     private function verifySignature(array $notification): bool
     {
-        $serverKey = Setting::get('midtrans_server_key');
+        // Get server key from settings or fallback to .env
+        $serverKey = Setting::get('midtrans_server_key', config('midtrans.server_key'));
         
         $orderId = $notification['order_id'] ?? '';
         $statusCode = $notification['status_code'] ?? '';
