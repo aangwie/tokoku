@@ -17,6 +17,56 @@
             line-height: 1.6;
             color: #333;
             padding: 20px;
+            position: relative;
+        }
+        
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 120px;
+            font-weight: bold;
+            opacity: 0.08;
+            z-index: -1;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+        
+        .watermark-pending {
+            color: #f59e0b;
+        }
+        
+        .watermark-paid {
+            color: #10b981;
+        }
+        
+        .watermark-shipping {
+            color: #3b82f6;
+        }
+        
+        .watermark-completed {
+            color: #10b981;
+        }
+        
+        .watermark-cancelled {
+            color: #ef4444;
+        }
+        
+        .logo-container {
+            float: left;
+            margin-right: 20px;
+            max-width: 120px;
+        }
+        
+        .logo-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 80px;
+        }
+        
+        .header-content {
+            overflow: hidden;
         }
         
         .invoice-header {
@@ -253,21 +303,50 @@
     </style>
 </head>
 <body>
+    {{-- Status Watermark --}}
+    @php
+        $watermarkClass = match($order->status) {
+            'pending' => 'watermark-pending',
+            'paid' => 'watermark-paid',
+            'shipping' => 'watermark-shipping',
+            'completed' => 'watermark-completed',
+            'cancelled' => 'watermark-cancelled',
+            default => 'watermark-pending',
+        };
+        $watermarkText = match($order->status) {
+            'pending' => 'PENDING',
+            'paid' => 'PAID',
+            'shipping' => 'SHIPPING',
+            'completed' => 'COMPLETED',
+            'cancelled' => 'CANCELLED',
+            default => strtoupper($order->status),
+        };
+    @endphp
+    <div class="watermark {{ $watermarkClass }}">{{ $watermarkText }}</div>
+
     {{-- Invoice Header --}}
     <div class="invoice-header">
-        <h1>INVOICE</h1>
-        <div class="store-info">
-            <strong>{{ $storeName }}</strong><br>
-            @if($storeAddress)
-                {{ $storeAddress }}<br>
-            @endif
-            @if($storePhone)
-                Telp: {{ $storePhone }}
-            @endif
-            @if($storeEmail)
-                | Email: {{ $storeEmail }}
-            @endif
+        @if($storeLogo && file_exists(public_path($storeLogo)))
+            <div class="logo-container">
+                <img src="{{ public_path($storeLogo) }}" alt="{{ $storeName }}">
+            </div>
+        @endif
+        <div class="header-content">
+            <h1>INVOICE</h1>
+            <div class="store-info">
+                <strong>{{ $storeName }}</strong><br>
+                @if($storeAddress)
+                    {{ $storeAddress }}<br>
+                @endif
+                @if($storePhone)
+                    Telp: {{ $storePhone }}
+                @endif
+                @if($storeEmail)
+                    | Email: {{ $storeEmail }}
+                @endif
+            </div>
         </div>
+        <div style="clear: both;"></div>
     </div>
 
     {{-- Invoice Meta Information --}}

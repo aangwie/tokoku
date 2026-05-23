@@ -104,6 +104,7 @@ class OrderController extends Controller
         $storePhone = Setting::get('store_phone', '');
         $storeEmail = Setting::get('store_email', '');
         $storeWebsite = Setting::get('store_website', '');
+        $storeLogo = Setting::get('store_logo', '');
 
         // Generate PDF
         $pdf = \PDF::loadView('orders.invoice', compact(
@@ -112,7 +113,8 @@ class OrderController extends Controller
             'storeAddress',
             'storePhone',
             'storeEmail',
-            'storeWebsite'
+            'storeWebsite',
+            'storeLogo'
         ));
 
         // Set paper size and orientation
