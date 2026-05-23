@@ -23,3 +23,36 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+
+# ==========================================
+# SCRIPT OTOMATISASI CACHE UNTUK WEBVIEW (DITAMBAHKAN DI SINI)
+# ==========================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Atur kedaluwarsa default (jika tidak diatur spesifik)
+    ExpiresDefault "access plus 2 days"
+    
+    # Otomatis kunci aset statis selama 1 TAHUN di memori HP
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+    
+    # Otomatis kunci Font & Gambar (WebP, Icon) selama 1 TAHUN
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    
+    # Untuk data HTML Laravel (Dynamic), jangan dikunci lama-lama agar data produk selalu update
+    ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_headers.c>
+    # Tambahkan instruksi Cache-Control agar WebView patuh
+    <FilesMatch "\.(js|css|woff2|webp|png|jpg|jpeg|gif|ico)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>

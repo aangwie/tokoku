@@ -1,49 +1,81 @@
 <x-customer-layout>
-    <!-- Hero Section -->
-    <div class="relative overflow-hidden bg-gradient-to-r from-white via-white to-[#91ebff]/30 dark:from-gray-800 dark:to-gray-800/40 border-b border-gray-150 dark:border-gray-700 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="relative z-10 max-w-2xl">
-                <h1 class="text-4xl font-extrabold tracking-tight text-gray-950 dark:text-white sm:text-5xl">
-                    Selamat Datang di <span class="bg-gradient-to-r from-indigo-650 to-[#5ad6f2] bg-clip-text text-transparent dark:from-[#91ebff] dark:to-white">{{ \App\Models\Setting::get('store_name', config('app.name', 'BN Boutique')) }}</span>
-                </h1>
-                <p class="mt-4 text-lg text-gray-600 dark:text-gray-300">
-                    Temukan koleksi produk berkualitas tinggi dengan penawaran terbaik. Nikmati kemudahan berbelanja dengan multi-payment gateway aman dan notifikasi otomatis.
-                </p>
-            </div>
-        </div>
-        {{-- Floating glow nodes --}}
-        <div class="absolute right-0 top-0 -mr-16 -mt-16 w-80 h-80 rounded-full bg-[#91ebff]/30 blur-3xl opacity-70"></div>
-        <div class="absolute right-32 bottom-0 w-32 h-32 rounded-full bg-indigo-500/5 blur-2xl"></div>
-    </div>
-
     <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="flex flex-col md:flex-row gap-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" x-data="productSearch()">
+        <!-- Filter Bar -->
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 mb-8">
             
-            <!-- Category Filter Sidebar -->
-            <div class="w-full md:w-64 shrink-0">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
-                    <h3 class="font-bold text-lg text-gray-900 dark:text-white mb-4">Kategori</h3>
-                    <ul class="space-y-2">
-                        <li>
-                            <a href="{{ route('home') }}" class="block px-3 py-2 rounded-md text-sm font-medium {{ request('category') == '' ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50' }}">
-                                Semua Kategori
-                            </a>
-                        </li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Category Select -->
+                <div>
+                    <label for="category-select" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Kategori
+                    </label>
+                    <select id="category-select" 
+                            onchange="window.location.href = this.value"
+                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200">
+                        <option value="{{ route('home') }}" {{ request('category') == '' ? 'selected' : '' }}>
+                            Semua Kategori
+                        </option>
                         @foreach($categories as $category)
-                            <li>
-                                <a href="{{ route('home', ['category' => $category->slug]) }}" class="block px-3 py-2 rounded-md text-sm font-medium {{ request('category') == $category->slug ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400' : 'text-gray-600 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-700/50' }}">
-                                    {{ $category->name }}
-                                </a>
-                            </li>
+                            <option value="{{ route('home', ['category' => $category->slug]) }}" {{ request('category') == $category->slug ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
                         @endforeach
-                    </ul>
+                    </select>
+                </div>
+
+                <!-- Product Search with Autocomplete -->
+                <div class="relative">
+                    <label for="product-search" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Cari Produk
+                    </label>
+                    <div class="relative">
+                        <input type="text" 
+                               id="product-search"
+                               x-model="searchQuery"
+                               @input="searchProducts()"
+                               @focus="showResults = true"
+                               @click.away="showResults = false"
+                               placeholder="Ketik nama produk..."
+                               class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 pl-4 pr-10 py-2">
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        
+                        <!-- Autocomplete Results -->
+                        <div x-show="showResults && searchResults.length > 0"
+                             x-transition
+                             class="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 max-h-96 overflow-y-auto">
+                            <template x-for="product in searchResults" :key="product.id">
+                                <a :href="product.url" 
+                                   class="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 border-b border-gray-100 dark:border-gray-700 last:border-0">
+                                    <img :src="product.image" 
+                                         :alt="product.name" 
+                                         class="w-12 h-12 object-cover rounded">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 dark:text-white truncate" x-text="product.name"></p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400" x-text="product.category"></p>
+                                        <p class="text-sm font-bold text-indigo-600 dark:text-indigo-400" x-text="product.price"></p>
+                                    </div>
+                                </a>
+                            </template>
+                        </div>
+                        
+                        <!-- No Results Message -->
+                        <div x-show="showResults && searchQuery.length > 0 && searchResults.length === 0"
+                             x-transition
+                             class="absolute z-50 w-full mt-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-4">
+                            <p class="text-sm text-gray-500 dark:text-gray-400 text-center">Tidak ada produk ditemukan</p>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Product Grid -->
-            <div class="flex-1">
-                <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white mb-6">Produk Pilihan</h2>
+        <!-- Product Grid -->
+        <div class="flex-1">
                 
                 @if($products->isEmpty())
                     <div class="bg-white dark:bg-gray-800 text-center py-12 rounded-lg border border-gray-100 dark:border-gray-700">
@@ -104,4 +136,42 @@
             
         </div>
     </div>
+
+    @php
+        $productsData = $products->map(function($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'category' => $product->category->name,
+                'price' => 'Rp ' . number_format($product->price, 0, ',', '.'),
+                'image' => $product->image ? asset($product->image) : '',
+                'url' => route('products.show', $product->slug)
+            ];
+        });
+    @endphp
+
+    <script>
+        function productSearch() {
+            return {
+                searchQuery: '',
+                searchResults: [],
+                showResults: false,
+                allProducts: @json($productsData),
+
+                searchProducts() {
+                    if (this.searchQuery.length < 2) {
+                        this.searchResults = [];
+                        return;
+                    }
+
+                    const query = this.searchQuery.toLowerCase();
+                    this.searchResults = this.allProducts.filter(product => 
+                        product.name.toLowerCase().includes(query) ||
+                        product.category.toLowerCase().includes(query)
+                    ).slice(0, 5); // Limit to 5 results
+                }
+            }
+        }
+    </script>
 </x-customer-layout>

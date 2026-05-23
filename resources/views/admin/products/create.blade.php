@@ -76,8 +76,9 @@
                         </div>
 
                         <div class="mb-6">
-                            <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gambar Produk (Akan dikompres otomatis ke WebP)</label>
+                            <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gambar Produk</label>
                             <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Maksimal 500KB. Gambar akan dikonversi ke WebP dan disimpan di storage.</p>
                             @error('image')
                                 <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror

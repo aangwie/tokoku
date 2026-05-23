@@ -19,7 +19,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
                 {{-- Revenue Card --}}
-                <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                <div class="group bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="p-3 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl shadow-lg shadow-emerald-200 dark:shadow-emerald-900/30">
@@ -38,7 +38,7 @@
                 </div>
 
                 {{-- Orders Card --}}
-                <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                <div class="group bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="p-3 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl shadow-lg shadow-blue-200 dark:shadow-blue-900/30">
@@ -57,7 +57,7 @@
                 </div>
 
                 {{-- Products Card --}}
-                <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                <div class="group bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="p-3 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl shadow-lg shadow-amber-200 dark:shadow-amber-900/30">
@@ -76,7 +76,7 @@
                 </div>
 
                 {{-- Categories Card --}}
-                <div class="group bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
+                <div class="group bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 overflow-hidden">
                     <div class="p-6">
                         <div class="flex items-center justify-between mb-4">
                             <div class="p-3 bg-gradient-to-br from-violet-400 to-purple-600 rounded-xl shadow-lg shadow-violet-200 dark:shadow-violet-900/30">
@@ -101,7 +101,7 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                 {{-- Top Selling Products --}}
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
                     <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                         <div class="flex items-center gap-3">
                             <div class="p-2 bg-gradient-to-br from-rose-400 to-pink-600 rounded-lg">
@@ -170,7 +170,7 @@
                 </div>
 
                 {{-- Recent Orders --}}
-                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
+                <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden">
                     <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center gap-3">
@@ -235,7 +235,7 @@
             {{-- ============================== --}}
             {{-- Quick Actions --}}
             {{-- ============================== --}}
-            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+            <div class="bg-gray-50 dark:bg-gray-800 rounded-2xl shadow-lg p-6">
                 <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Aksi Cepat</h3>
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <a href="{{ route('admin.products.create') }}" class="flex flex-col items-center gap-2 p-4 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/20 transition-all duration-200 group">

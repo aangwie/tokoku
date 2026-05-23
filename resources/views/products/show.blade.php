@@ -1,12 +1,22 @@
 <x-customer-layout>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" x-data="{ showImageOverlay: false }">
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 md:p-8">
                 
                 <!-- Product Image -->
                 <div>
                     @if($product->image)
-                        <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-inner">
+                        <div class="relative group cursor-pointer" @click="showImageOverlay = true">
+                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="w-full h-auto max-h-[500px] object-cover rounded-lg shadow-inner transition duration-300 group-hover:opacity-90">
+                            <!-- Zoom Icon Overlay -->
+                            <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 bg-black/10 rounded-lg">
+                                <div class="bg-white/90 dark:bg-gray-800/90 rounded-full p-3 shadow-lg">
+                                    <svg class="w-8 h-8 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <div class="w-full h-80 bg-gray-100 dark:bg-gray-700 flex items-center justify-center rounded-lg">
                             <svg class="w-24 h-24 text-gray-300" fill="currentColor" viewBox="0 0 24 24">
@@ -78,5 +88,42 @@
 
             </div>
         </div>
+
+        <!-- Image Overlay Modal -->
+        @if($product->image)
+            <div x-show="showImageOverlay" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm"
+                 @click.self="showImageOverlay = false"
+                 style="display: none;">
+                
+                <!-- Close Button -->
+                <button @click="showImageOverlay = false" 
+                        class="absolute top-4 right-4 p-2 rounded-full bg-white/90 dark:bg-gray-800/90 hover:bg-white dark:hover:bg-gray-800 transition duration-200 shadow-lg z-10">
+                    <svg class="w-6 h-6 text-gray-700 dark:text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+
+                <!-- Image Container (50% of screen) -->
+                <div class="relative w-full h-full max-w-[50vw] max-h-[50vh] flex items-center justify-center"
+                     x-transition:enter="transition ease-out duration-300 transform"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-200 transform"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95">
+                    <img src="{{ asset($product->image) }}" 
+                         alt="{{ $product->name }}" 
+                         class="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+                         @click.stop>
+                </div>
+            </div>
+        @endif
     </div>
 </x-customer-layout>

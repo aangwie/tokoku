@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{
+            isDarkMode: localStorage.getItem('darkMode') === 'true'
+        }" :class="{ 'dark': isDarkMode }">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ \App\Models\Setting::get('store_name', config('app.name', 'Toko Online')) }}</title>
+
+        <!-- Favicon -->
+        @php
+            $faviconLogo = \App\Models\Setting::get('store_logo');
+        @endphp
+        @if($faviconLogo)
+            <link rel="icon" type="image/x-icon" href="{{ str_starts_with($faviconLogo, 'data:') ? $faviconLogo : asset($faviconLogo) }}">
+        @endif
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -28,7 +38,7 @@
                             <!-- Logo / Store Name -->
                             <a href="{{ route('home') }}" class="flex items-center gap-2">
                                 @if($storeLogo)
-                                    <img src="{{ asset($storeLogo) }}" alt="{{ $storeName }}" class="h-9 w-auto object-contain rounded-md" />
+                                    <img src="{{ str_starts_with($storeLogo, 'data:') ? $storeLogo : asset($storeLogo) }}" alt="{{ $storeName }}" class="h-9 w-auto object-contain rounded-md" />
                                 @endif
                                 <span class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-650 via-indigo-500 to-[#67dbf5] dark:from-[#91ebff] dark:to-white">
                                     {{ $storeName }}
@@ -38,6 +48,16 @@
 
                         <!-- Right Side Navbar -->
                         <div class="flex items-center gap-4">
+                            <!-- Dark Mode Toggle -->
+                            <button @click="isDarkMode = !isDarkMode; localStorage.setItem('darkMode', isDarkMode)" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150" title="Toggle Dark Mode">
+                                <svg x-show="!isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                                <svg x-show="isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                                </svg>
+                            </button>
+
                             <!-- Cart Icon -->
                             <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition duration-150">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

@@ -52,7 +52,7 @@ class SettingController extends Controller
         $request->validate([
             'store_name' => 'required|string|max:255',
             'store_whatsapp' => 'nullable|string|max:20|regex:/^[0-9]+$/',
-            'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:1024',
             'payment_method' => 'nullable|in:paymentgateway,transfer',
 
             // Bank transfer validation
@@ -100,7 +100,7 @@ class SettingController extends Controller
 
         // Handle logo upload
         if ($request->hasFile('store_logo')) {
-            // Delete old logo if it was stored in storage/
+            // Delete old logo file if it was stored in storage/ (not base64)
             $oldLogo = Setting::get('store_logo');
             if ($oldLogo && str_starts_with($oldLogo, 'storage/')) {
                 $oldPath = str_replace('storage/', '', $oldLogo);
@@ -109,15 +109,19 @@ class SettingController extends Controller
                 }
             }
 
-            // Compress and save new logo using ImageService
-            $logoPath = $this->imageService->compressAndSave(
-                $request->file('store_logo'),
-                'logos',
-                400,
-                85
-            );
+            try {
+                // Convert to WebP and encode as base64
+                $logoBase64 = $this->imageService->convertToWebPBase64(
+                    $request->file('store_logo'),
+                    400,
+                    85
+                );
 
-            Setting::set('store_logo', $logoPath);
+                // Save base64 string to database
+                Setting::set('store_logo', $logoBase64);
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Gagal memproses gambar: ' . $e->getMessage());
+            }
         }
 
         return redirect()->route('admin.settings.edit')->with('success', 'Pengaturan toko berhasil diperbarui!');

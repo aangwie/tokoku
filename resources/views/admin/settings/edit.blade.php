@@ -81,7 +81,7 @@
                                 <div class="mb-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-200 dark:border-gray-600 inline-block">
                                     <p class="text-xs text-gray-500 dark:text-gray-400 mb-2 font-medium uppercase tracking-wider">Logo Saat Ini</p>
                                     <img
-                                        src="{{ asset($settings['store_logo']) }}"
+                                        src="{{ str_starts_with($settings['store_logo'], 'data:') ? $settings['store_logo'] : asset($settings['store_logo']) }}"
                                         alt="Logo Toko"
                                         class="h-20 w-auto object-contain rounded-lg shadow-sm"
                                     />
@@ -110,7 +110,7 @@
                                         cursor-pointer"
                                     onchange="previewLogo(this)"
                                 />
-                                <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Format: JPEG, PNG, WebP, GIF. Maksimal 5MB. Gambar akan dikompresi otomatis.</p>
+                                <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Format: JPEG, PNG, WebP, GIF. Maksimal 1MB. Gambar akan dikonversi ke WebP dan disimpan sebagai base64.</p>
                             </div>
 
                             {{-- New Logo Preview --}}

@@ -84,4 +84,80 @@ class ImageService
 
         return 'storage/' . $directory . '/' . $filename;
     }
+
+    /**
+     * Convert an uploaded image to WebP format and return as base64 string.
+     * Validates file size and compresses the image.
+     *
+     * @param UploadedFile $file
+     * @param int $maxWidth Maximum width for the image
+     * @param int $quality WebP quality (0-100)
+     * @return string Base64 encoded WebP image with data URI prefix
+     * @throws \Exception If image processing fails
+     */
+    public function convertToWebPBase64(UploadedFile $file, int $maxWidth = 400, int $quality = 85): string
+    {
+        // Get original dimensions
+        $imageInfo = getimagesize($file->getRealPath());
+        if (!$imageInfo) {
+            throw new \Exception('Invalid image file');
+        }
+
+        list($origWidth, $origHeight, $imageType) = $imageInfo;
+
+        // Calculate new dimensions (maintain aspect ratio)
+        $width = $origWidth;
+        $height = $origHeight;
+
+        if ($origWidth > $maxWidth) {
+            $width = $maxWidth;
+            $height = (int) (($origHeight / $origWidth) * $maxWidth);
+        }
+
+        // Load image based on type
+        $sourceImage = null;
+        switch ($imageType) {
+            case IMAGETYPE_JPEG:
+                $sourceImage = imagecreatefromjpeg($file->getRealPath());
+                break;
+            case IMAGETYPE_PNG:
+                $sourceImage = imagecreatefrompng($file->getRealPath());
+                break;
+            case IMAGETYPE_GIF:
+                $sourceImage = imagecreatefromgif($file->getRealPath());
+                break;
+            case IMAGETYPE_WEBP:
+                $sourceImage = imagecreatefromwebp($file->getRealPath());
+                break;
+            default:
+                throw new \Exception('Unsupported image type');
+        }
+
+        if (!$sourceImage) {
+            throw new \Exception('Failed to load image');
+        }
+
+        // Create new true color image
+        $resizedImage = imagecreatetruecolor($width, $height);
+
+        // Preserve transparency for PNG/WebP
+        imagealphablending($resizedImage, false);
+        imagesavealpha($resizedImage, true);
+
+        // Copy and resize
+        imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $width, $height, $origWidth, $origHeight);
+
+        // Convert to WebP and get binary data
+        ob_start();
+        imagewebp($resizedImage, null, $quality);
+        $webpData = ob_get_clean();
+
+        // Free memory
+        imagedestroy($sourceImage);
+        imagedestroy($resizedImage);
+
+        // Convert to base64 with data URI prefix
+        $base64 = base64_encode($webpData);
+        return 'data:image/webp;base64,' . $base64;
+    }
 }

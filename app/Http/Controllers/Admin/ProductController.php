@@ -42,7 +42,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'weight' => 'required|integer|min:1',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:512',
         ]);
 
         $imagePath = null;
@@ -80,7 +80,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'weight' => 'required|integer|min:1',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:512',
         ]);
 
         $imagePath = $product->image;
