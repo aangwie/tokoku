@@ -44,8 +44,20 @@ class OrderController extends Controller
     {
         // Pastikan user hanya bisa mengakses pesanannya sendiri (kecuali admin)
         $user = Auth::user();
-        $isOwner = $order->user_id === Auth::id();
+        $isOwner = $order->user_id == Auth::id(); // Use == for type-safe comparison
         $isAdmin = $user && isset($user->role) && $user->role === 'admin';
+        
+        // Debug logging (remove after testing)
+        \Log::info('Order Access Check', [
+            'order_id' => $order->id,
+            'order_user_id' => $order->user_id,
+            'order_user_id_type' => gettype($order->user_id),
+            'auth_user_id' => Auth::id(),
+            'auth_user_id_type' => gettype(Auth::id()),
+            'user_role' => $user->role ?? 'no role',
+            'isOwner' => $isOwner,
+            'isAdmin' => $isAdmin,
+        ]);
         
         if (!$isOwner && !$isAdmin) {
             abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
