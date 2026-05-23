@@ -122,6 +122,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::post('/webhook/midtrans/notification', [MidtransCallbackController::class, 'notification'])
     ->name('midtrans.notification');
 
+// Midtrans Webhook Test Endpoint (GET for testing)
+Route::get('/webhook/midtrans/notification', [MidtransCallbackController::class, 'test'])
+    ->name('midtrans.notification.test');
+
 // Midtrans Redirect URLs (After Payment)
 Route::get('/payment/midtrans/finish', [MidtransCallbackController::class, 'finish'])
     ->name('midtrans.finish');

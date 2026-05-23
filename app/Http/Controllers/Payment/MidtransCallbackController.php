@@ -11,6 +11,22 @@ use Illuminate\Support\Facades\Log;
 class MidtransCallbackController extends Controller
 {
     /**
+     * Test endpoint for Midtrans webhook (GET request)
+     * 
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function test()
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Midtrans webhook endpoint is ready',
+            'endpoint' => url('/webhook/midtrans/notification'),
+            'method' => 'POST',
+            'timestamp' => now()->toIso8601String(),
+        ], 200);
+    }
+
+    /**
      * Handle Midtrans payment notification
      * 
      * @param Request $request
