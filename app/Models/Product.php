@@ -15,6 +15,8 @@ class Product extends Model
         'weight',
         'stock',
         'image',
+        'is_free_shipping',
+        'shipping_cost',
     ];
 
     public function category()

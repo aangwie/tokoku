@@ -30,7 +30,12 @@ class CustomerSettingController extends Controller
             'label' => 'required|string|max:50',
             'recipient_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
-            'full_address' => 'required|string|max:500',
+            'province_code' => 'required|string|max:10',
+            'city_code' => 'required|string|max:10',
+            'district_code' => 'required|string|max:10',
+            'village_code' => 'required|string|max:10',
+            'street_address' => 'required|string|max:500',
+            'full_address' => 'required|string|max:1000',
             'is_default' => 'nullable|boolean',
         ]);
 
@@ -48,6 +53,11 @@ class CustomerSettingController extends Controller
             'label' => $request->label,
             'recipient_name' => $request->recipient_name,
             'phone' => $request->phone,
+            'province_code' => $request->province_code,
+            'city_code' => $request->city_code,
+            'district_code' => $request->district_code,
+            'village_code' => $request->village_code,
+            'street_address' => $request->street_address,
             'full_address' => $request->full_address,
             'is_default' => $request->is_default || $isFirst,
         ]);
@@ -69,7 +79,12 @@ class CustomerSettingController extends Controller
             'label' => 'required|string|max:50',
             'recipient_name' => 'required|string|max:100',
             'phone' => 'required|string|max:20',
-            'full_address' => 'required|string|max:500',
+            'province_code' => 'required|string|max:10',
+            'city_code' => 'required|string|max:10',
+            'district_code' => 'required|string|max:10',
+            'village_code' => 'required|string|max:10',
+            'street_address' => 'required|string|max:500',
+            'full_address' => 'required|string|max:1000',
             'is_default' => 'nullable|boolean',
         ]);
 
@@ -81,6 +96,11 @@ class CustomerSettingController extends Controller
             'label' => $request->label,
             'recipient_name' => $request->recipient_name,
             'phone' => $request->phone,
+            'province_code' => $request->province_code,
+            'city_code' => $request->city_code,
+            'district_code' => $request->district_code,
+            'village_code' => $request->village_code,
+            'street_address' => $request->street_address,
             'full_address' => $request->full_address,
             'is_default' => (bool) $request->is_default,
         ]);

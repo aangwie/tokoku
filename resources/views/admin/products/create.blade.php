@@ -75,6 +75,39 @@
                             </div>
                         </div>
 
+                        {{-- Shipping Options --}}
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Biaya Pengiriman</label>
+                            <div class="space-y-2">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="is_free_shipping" value="1" {{ old('is_free_shipping', '1') == '1' ? 'checked' : '' }} 
+                                           class="rounded-full border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                           onchange="toggleShippingCost()">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Gratis Ongkir</span>
+                                </label>
+                                <label class="inline-flex items-center ml-6">
+                                    <input type="radio" name="is_free_shipping" value="0" {{ old('is_free_shipping') == '0' ? 'checked' : '' }}
+                                           class="rounded-full border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                                           onchange="toggleShippingCost()">
+                                    <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Berbayar</span>
+                                </label>
+                            </div>
+                            @error('is_free_shipping')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        {{-- Shipping Cost Input (shown when Berbayar is selected) --}}
+                        <div id="shippingCostField" class="mb-4" style="display: {{ old('is_free_shipping', '1') == '0' ? 'block' : 'none' }};">
+                            <label for="shipping_cost" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Biaya Ongkir (Rp)</label>
+                            <input type="number" name="shipping_cost" id="shipping_cost" min="0" step="0.01" value="{{ old('shipping_cost') }}" 
+                                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                            <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Masukkan biaya pengiriman untuk produk ini.</p>
+                            @error('shipping_cost')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="mb-6">
                             <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Gambar Produk</label>
                             <input type="file" name="image" id="image" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100">
@@ -97,4 +130,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function toggleShippingCost() {
+            const isFreeShipping = document.querySelector('input[name="is_free_shipping"]:checked').value;
+            const shippingCostField = document.getElementById('shippingCostField');
+            const shippingCostInput = document.getElementById('shipping_cost');
+            
+            if (isFreeShipping === '0') {
+                shippingCostField.style.display = 'block';
+                shippingCostInput.required = true;
+            } else {
+                shippingCostField.style.display = 'none';
+                shippingCostInput.required = false;
+                shippingCostInput.value = '';
+            }
+        }
+    </script>
 </x-app-layout>

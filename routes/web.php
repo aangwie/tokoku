@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerSettingController;
+use App\Http\Controllers\Api\WilayahController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Payment\MidtransCallbackController;
 use App\Http\Controllers\PageController;
@@ -74,6 +75,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/bank-account', [CustomerSettingController::class, 'storeBankAccount'])->name('customer.bank.store');
     Route::put('/settings/bank-account/{bankAccount}', [CustomerSettingController::class, 'updateBankAccount'])->name('customer.bank.update');
     Route::delete('/settings/bank-account/{bankAccount}', [CustomerSettingController::class, 'destroyBankAccount'])->name('customer.bank.destroy');
+
+    // API Wilayah Indonesia
+    Route::get('/api/provinces', [WilayahController::class, 'getProvinces'])->name('api.provinces');
+    Route::get('/api/cities/{provinceCode}', [WilayahController::class, 'getCities'])->name('api.cities');
+    Route::get('/api/districts/{cityCode}', [WilayahController::class, 'getDistricts'])->name('api.districts');
+    Route::get('/api/villages/{districtCode}', [WilayahController::class, 'getVillages'])->name('api.villages');
 });
 
 /*

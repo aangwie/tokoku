@@ -13,6 +13,11 @@ class CustomerAddress extends Model
         'recipient_name',
         'phone',
         'full_address',
+        'province_code',
+        'city_code',
+        'district_code',
+        'village_code',
+        'street_address',
         'is_default',
     ];
 
