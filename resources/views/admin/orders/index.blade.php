@@ -78,6 +78,80 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            {{-- Revenue Statistics Card --}}
+            <div class="mb-6 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">💰 Total Pendapatan</h3>
+                        <p class="text-3xl font-bold">Rp {{ number_format($filteredRevenue, 0, ',', '.') }}</p>
+                        <p class="text-sm opacity-90 mt-1">{{ $filterLabel }}</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('admin.orders.index', ['filter_type' => 'all']) }}" 
+                           class="px-4 py-2 rounded-lg font-semibold transition {{ $filterType === 'all' ? 'bg-white text-indigo-600' : 'bg-white/20 hover:bg-white/30' }}">
+                            Semua Waktu
+                        </a>
+                        <a href="{{ route('admin.orders.index', ['filter_type' => 'month']) }}" 
+                           class="px-4 py-2 rounded-lg font-semibold transition {{ $filterType === 'month' ? 'bg-white text-indigo-600' : 'bg-white/20 hover:bg-white/30' }}">
+                            Bulan Ini
+                        </a>
+                        <button onclick="toggleCustomFilter()" 
+                                class="px-4 py-2 rounded-lg font-semibold transition {{ $filterType === 'custom' ? 'bg-white text-indigo-600' : 'bg-white/20 hover:bg-white/30' }}">
+                            Custom
+                        </button>
+                    </div>
+                </div>
+                
+                {{-- Custom Date Range Filter --}}
+                <div id="customFilterForm" class="mt-4 pt-4 border-t border-white/20 {{ $filterType === 'custom' ? '' : 'hidden' }}">
+                    <form method="GET" action="{{ route('admin.orders.index') }}" class="flex flex-wrap gap-3 items-end">
+                        <input type="hidden" name="filter_type" value="custom">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Tanggal Mulai</label>
+                            <input type="date" name="start_date" value="{{ $startDate }}" 
+                                   class="px-3 py-2 rounded-lg border-0 text-gray-900 focus:ring-2 focus:ring-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Tanggal Akhir</label>
+                            <input type="date" name="end_date" value="{{ $endDate }}" 
+                                   class="px-3 py-2 rounded-lg border-0 text-gray-900 focus:ring-2 focus:ring-white" required>
+                        </div>
+                        <button type="submit" class="px-6 py-2 bg-white text-indigo-600 rounded-lg font-semibold hover:bg-gray-100 transition">
+                            Terapkan
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            {{-- Order Statistics Cards --}}
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
+                <div class="bg-gradient-to-br from-gray-500 to-gray-600 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Total Pesanan</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['total'] }}</p>
+                </div>
+                <div class="bg-gradient-to-br from-yellow-400 to-yellow-500 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Pending</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['pending'] }}</p>
+                </div>
+                <div class="bg-gradient-to-br from-green-400 to-green-500 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Paid</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['paid'] }}</p>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-400 to-indigo-500 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Shipping</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['shipping'] }}</p>
+                </div>
+                <div class="bg-gradient-to-br from-blue-400 to-blue-500 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Completed</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['completed'] }}</p>
+                </div>
+                <div class="bg-gradient-to-br from-red-400 to-red-500 rounded-lg shadow-lg p-4 text-white">
+                    <p class="text-sm opacity-90">Cancelled</p>
+                    <p class="text-2xl font-bold">{{ $orderCounts['cancelled'] }}</p>
+                </div>
+            </div>
+
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <div class="overflow-x-auto">
                     <table id="ordersTable" class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -146,6 +220,12 @@
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.tailwindcss.min.js"></script>
 
     <script>
+        // Toggle custom filter form
+        function toggleCustomFilter() {
+            const form = document.getElementById('customFilterForm');
+            form.classList.toggle('hidden');
+        }
+
         $(document).ready(function() {
             $('#ordersTable').DataTable({
                 "language": {
