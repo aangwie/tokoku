@@ -355,4 +355,65 @@ class SystemUpdateController extends Controller
             ]);
         }
     }
+
+    /**
+     * Create storage symbolic link
+     */
+    public function createStorageLink(Request $request)
+    {
+        try {
+            $output = [];
+            
+            $output[] = "=== Creating Storage Link ===";
+            
+            // Check if link already exists
+            $publicStoragePath = public_path('storage');
+            if (file_exists($publicStoragePath)) {
+                if (is_link($publicStoragePath)) {
+                    $output[] = "Storage link already exists!";
+                    $output[] = "Link: " . $publicStoragePath;
+                    $output[] = "Target: " . readlink($publicStoragePath);
+                    
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Storage link sudah ada!',
+                        'output' => implode("\n", $output)
+                    ]);
+                } else {
+                    $output[] = "Warning: 'public/storage' exists but is not a symbolic link!";
+                    $output[] = "Please remove it manually first.";
+                    
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Direktori public/storage sudah ada tetapi bukan symbolic link!',
+                        'output' => implode("\n", $output)
+                    ]);
+                }
+            }
+            
+            // Create the symbolic link
+            Artisan::call('storage:link');
+            $output[] = Artisan::output();
+            
+            $output[] = "";
+            $output[] = "=== Storage Link Created Successfully! ===";
+            $output[] = "Link: " . $publicStoragePath;
+            $output[] = "Target: " . storage_path('app/public');
+            $output[] = "";
+            $output[] = "Gambar produk sekarang dapat diakses melalui URL public/storage/";
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Storage link berhasil dibuat!',
+                'output' => implode("\n", $output)
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+                'output' => $e->getTraceAsString()
+            ]);
+        }
+    }
 }

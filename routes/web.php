@@ -116,6 +116,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/system/run-migrations', [AdminSystemUpdateController::class, 'runMigrations'])->name('system.runMigrations');
     Route::post('/system/optimize', [AdminSystemUpdateController::class, 'optimize'])->name('system.optimize');
     Route::post('/system/composer-update', [AdminSystemUpdateController::class, 'composerUpdate'])->name('system.composerUpdate');
+    Route::post('/system/storage-link', [AdminSystemUpdateController::class, 'createStorageLink'])->name('system.storageLink');
     Route::post('/system/info', [AdminSystemUpdateController::class, 'systemInfo'])->name('system.info');
 });
 
