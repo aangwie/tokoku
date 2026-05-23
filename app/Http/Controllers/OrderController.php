@@ -77,4 +77,50 @@ class OrderController extends Controller
 
         return view('orders.show', compact('order', 'midtransClientKey', 'bankAccounts'));
     }
+
+    /**
+     * Generate and download PDF invoice for an order.
+     *
+     * @param Order $order
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadInvoice(Order $order)
+    {
+        // Pastikan user hanya bisa mengakses pesanannya sendiri (kecuali admin)
+        $user = Auth::user();
+        $isOwner = $order->user_id == Auth::id();
+        $isAdmin = $user && isset($user->role) && $user->role === 'admin';
+        
+        if (!$isOwner && !$isAdmin) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+
+        // Eager load relasi yang dibutuhkan
+        $order->load(['user', 'coupon', 'orderItems.product']);
+
+        // Get store information from settings
+        $storeName = Setting::get('store_name', config('app.name', 'Toko Online'));
+        $storeAddress = Setting::get('store_address', '');
+        $storePhone = Setting::get('store_phone', '');
+        $storeEmail = Setting::get('store_email', '');
+        $storeWebsite = Setting::get('store_website', '');
+
+        // Generate PDF
+        $pdf = \PDF::loadView('orders.invoice', compact(
+            'order',
+            'storeName',
+            'storeAddress',
+            'storePhone',
+            'storeEmail',
+            'storeWebsite'
+        ));
+
+        // Set paper size and orientation
+        $pdf->setPaper('a4', 'portrait');
+
+        // Download PDF with filename
+        $filename = 'Invoice-' . $order->order_number . '.pdf';
+        
+        return $pdf->download($filename);
+    }
 }

@@ -388,6 +388,74 @@
                             </div>
                         </div>
 
+                        {{-- ==================== SECTION: Halaman Statis ==================== --}}
+                        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="p-3 bg-gradient-to-br from-blue-500 to-cyan-600 rounded-xl shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Halaman Statis</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Kelola konten Syarat & Ketentuan dan Kebijakan Pengembalian Dana</p>
+                                </div>
+                            </div>
+
+                            {{-- Terms and Conditions --}}
+                            <div class="mb-6">
+                                <label for="terms_and_conditions" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Syarat & Ketentuan
+                                </label>
+                                <textarea
+                                    name="terms_and_conditions"
+                                    id="terms_and_conditions"
+                                    rows="10"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 px-4 py-3 font-mono text-sm"
+                                    placeholder="Masukkan konten Syarat & Ketentuan dalam format HTML..."
+                                >{{ old('terms_and_conditions', $settings['terms_and_conditions'] ?? '') }}</textarea>
+                                <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Gunakan HTML untuk formatting (contoh: <h2>, <p>, <ul>, <li>, dll)</p>
+                                @error('terms_and_conditions')
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Refund Policy --}}
+                            <div class="mb-6">
+                                <label for="refund_policy" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                    Kebijakan Pengembalian Dana
+                                </label>
+                                <textarea
+                                    name="refund_policy"
+                                    id="refund_policy"
+                                    rows="10"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 px-4 py-3 font-mono text-sm"
+                                    placeholder="Masukkan konten Kebijakan Pengembalian Dana dalam format HTML..."
+                                >{{ old('refund_policy', $settings['refund_policy'] ?? '') }}</textarea>
+                                <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Gunakan HTML untuk formatting (contoh: <h2>, <p>, <ul>, <li>, dll)</p>
+                                @error('refund_policy')
+                                    <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            {{-- Info Box --}}
+                            <div class="bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                                <div class="flex items-start gap-2.5">
+                                    <svg class="w-5 h-5 text-blue-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    </svg>
+                                    <div class="text-xs text-blue-800 dark:text-blue-300 leading-relaxed">
+                                        <p class="font-semibold mb-1">Informasi</p>
+                                        <ul class="list-disc list-inside space-y-0.5 text-blue-700 dark:text-blue-400">
+                                            <li>Halaman ini akan ditampilkan di footer website</li>
+                                            <li>Gunakan HTML untuk formatting yang lebih baik</li>
+                                            <li>Pastikan konten sesuai dengan peraturan yang berlaku</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- Submit --}}
                         <div class="flex items-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
                             <button type="submit" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">

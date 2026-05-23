@@ -127,9 +127,24 @@
             </main>
 
             <!-- Footer -->
-            <footer class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 py-6 mt-12">
-                <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                    &copy; {{ date('Y') }} {{ $storeName }}. All rights reserved.
+            <footer class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 py-8 mt-12">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                        <!-- Copyright -->
+                        <div class="text-sm text-gray-500 dark:text-gray-400">
+                            &copy; {{ date('Y') }} {{ $storeName }}. All rights reserved.
+                        </div>
+                        
+                        <!-- Footer Links -->
+                        <div class="flex flex-wrap justify-center gap-6 text-sm">
+                            <a href="{{ route('pages.terms') }}" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-150">
+                                Syarat & Ketentuan
+                            </a>
+                            <a href="{{ route('pages.refund-policy') }}" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-150">
+                                Kebijakan Pengembalian Dana
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </footer>
         </div>

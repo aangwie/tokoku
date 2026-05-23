@@ -7,10 +7,21 @@
             Kembali ke Riwayat Pesanan
         </a>
 
-        {{-- Page Title --}}
-        <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-8">
-            Detail Pesanan <span class="text-indigo-600 dark:text-indigo-400">#{{ $order->order_number }}</span>
-        </h1>
+        {{-- Page Title & Actions --}}
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+            <h1 class="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                Detail Pesanan <span class="text-indigo-600 dark:text-indigo-400">#{{ $order->order_number }}</span>
+            </h1>
+            
+            {{-- Print Invoice Button --}}
+            <a href="{{ route('orders.invoice', $order) }}" 
+               class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-sm">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                </svg>
+                Cetak Invoice
+            </a>
+        </div>
 
         <div class="space-y-6">
 

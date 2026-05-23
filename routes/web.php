@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerSettingController;
 use App\Http\Controllers\WebhookController;
 use App\Http\Controllers\Payment\MidtransCallbackController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CouponController as AdminCouponController;
@@ -24,6 +25,10 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/product/{product:slug}', [HomeController::class, 'show'])->name('products.show');
+
+// Static Pages
+Route::get('/terms', [PageController::class, 'terms'])->name('pages.terms');
+Route::get('/refund-policy', [PageController::class, 'refundPolicy'])->name('pages.refund-policy');
 
 /*
 |--------------------------------------------------------------------------
@@ -54,6 +59,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
 
     // Pengaturan Pelanggan
     Route::get('/settings', [CustomerSettingController::class, 'index'])->name('customer.settings');
