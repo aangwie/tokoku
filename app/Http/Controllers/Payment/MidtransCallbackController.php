@@ -223,12 +223,12 @@ class MidtransCallbackController extends Controller
                     Log::error('Error checking payment status: ' . $e->getMessage());
                 }
                 
-                return redirect()->route('customer.orders.show', $order->id)
+                return redirect()->route('orders.show', $order->id)
                     ->with('success', 'Terima kasih! Pembayaran Anda sedang diproses.');
             }
         }
 
-        return redirect()->route('customer.orders.index')
+        return redirect()->route('orders.index')
             ->with('info', 'Pembayaran Anda sedang diproses.');
     }
     /**
@@ -294,12 +294,12 @@ class MidtransCallbackController extends Controller
         if ($orderId) {
             $order = Order::where('order_number', $orderId)->first();
             if ($order) {
-                return redirect()->route('customer.orders.show', $order->id)
+                return redirect()->route('orders.show', $order->id)
                     ->with('warning', 'Pembayaran Anda belum selesai. Silakan selesaikan pembayaran Anda.');
             }
         }
 
-        return redirect()->route('customer.orders.index')
+        return redirect()->route('orders.index')
             ->with('warning', 'Pembayaran belum selesai.');
     }
 
@@ -316,12 +316,12 @@ class MidtransCallbackController extends Controller
         if ($orderId) {
             $order = Order::where('order_number', $orderId)->first();
             if ($order) {
-                return redirect()->route('customer.orders.show', $order->id)
+                return redirect()->route('orders.show', $order->id)
                     ->with('error', 'Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi.');
             }
         }
 
-        return redirect()->route('customer.orders.index')
+        return redirect()->route('orders.index')
             ->with('error', 'Terjadi kesalahan saat memproses pembayaran.');
     }
 }
