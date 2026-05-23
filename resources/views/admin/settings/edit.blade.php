@@ -70,6 +70,24 @@
                             @enderror
                         </div>
 
+                        {{-- Store Address --}}
+                        <div class="mb-8">
+                            <label for="store_address" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Alamat Toko
+                            </label>
+                            <textarea
+                                name="store_address"
+                                id="store_address"
+                                rows="3"
+                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 px-4 py-3"
+                                placeholder="Masukkan alamat lengkap toko..."
+                            >{{ old('store_address', $settings['store_address'] ?? '') }}</textarea>
+                            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Alamat lengkap toko yang akan ditampilkan di footer website.</p>
+                            @error('store_address')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Store Logo --}}
                         <div class="mb-8">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
