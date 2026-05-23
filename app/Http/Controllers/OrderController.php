@@ -43,7 +43,11 @@ class OrderController extends Controller
     public function show(Order $order): View
     {
         // Pastikan user hanya bisa mengakses pesanannya sendiri (kecuali admin)
-        if ($order->user_id !== Auth::id() && Auth::user()->role !== 'admin') {
+        $user = Auth::user();
+        $isOwner = $order->user_id === Auth::id();
+        $isAdmin = $user && isset($user->role) && $user->role === 'admin';
+        
+        if (!$isOwner && !$isAdmin) {
             abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
         }
 
