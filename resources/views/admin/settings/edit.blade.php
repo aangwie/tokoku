@@ -143,7 +143,7 @@
                                                x-model="paymentMethod"
                                                {{ $settings['payment_method'] === 'paymentgateway' ? 'checked' : '' }}>
                                     </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Pembayaran otomatis menggunakan Midtrans dan Xendit. Pelanggan dapat membayar via Virtual Account, QRIS, E-Wallet, dll.</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Pembayaran otomatis menggunakan Midtrans. Pelanggan dapat membayar via Virtual Account, QRIS, E-Wallet, dll.</p>
                                 </label>
 
                                 {{-- Manual Bank Transfer Option --}}
@@ -369,79 +369,6 @@
                                 </div>
                             </div>
 
-                            {{-- Xendit Settings --}}
-                            <div class="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/30 rounded-2xl border border-violet-200 dark:border-violet-800 p-6">
-                                <div class="flex items-center gap-3 mb-6">
-                                    <div class="p-2.5 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg shadow-sm">
-                                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <h4 class="font-bold text-gray-900 dark:text-white">Pengaturan Xendit</h4>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Konfigurasi API key untuk integrasi pembayaran Xendit</p>
-                                    </div>
-                                </div>
-
-                                <div class="space-y-4">
-                                    {{-- API Key --}}
-                                    <div>
-                                        <label for="xendit_api_key" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">
-                                            API Key (Secret Key)
-                                        </label>
-                                        <div class="relative" x-data="{ showKey: false }">
-                                            <input :type="showKey ? 'text' : 'password'"
-                                                   name="xendit_api_key"
-                                                   id="xendit_api_key"
-                                                   value="{{ old('xendit_api_key', $settings['xendit_api_key']) }}"
-                                                   placeholder="xnd_development_xxxxxxxxxxxx"
-                                                   class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-violet-500 focus:ring-violet-500 px-4 py-3 pr-20 font-mono transition duration-200" />
-                                            <button type="button" @click="showKey = !showKey"
-                                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-violet-500 transition">
-                                                <svg x-show="!showKey" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                </svg>
-                                                <svg x-show="showKey" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Digunakan untuk membuat invoice dan autentikasi API. <span class="text-amber-500 font-medium">Rahasiakan!</span></p>
-                                        @error('xendit_api_key')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    {{-- Callback Token --}}
-                                    <div>
-                                        <label for="xendit_callback_token" class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">
-                                            Callback Verification Token
-                                        </label>
-                                        <div class="relative" x-data="{ showKey: false }">
-                                            <input :type="showKey ? 'text' : 'password'"
-                                                   name="xendit_callback_token"
-                                                   id="xendit_callback_token"
-                                                   value="{{ old('xendit_callback_token', $settings['xendit_callback_token']) }}"
-                                                   placeholder="Token verifikasi callback webhook"
-                                                   class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-violet-500 focus:ring-violet-500 px-4 py-3 pr-20 font-mono transition duration-200" />
-                                            <button type="button" @click="showKey = !showKey"
-                                                    class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-violet-500 transition">
-                                                <svg x-show="!showKey" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                                </svg>
-                                                <svg x-show="showKey" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L6.59 6.59m7.532 7.532l3.29 3.29M3 3l18 18"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Digunakan untuk memverifikasi keaslian notifikasi webhook dari Xendit</p>
-                                        @error('xendit_callback_token')
-                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
                             {{-- Info Box --}}
                             <div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
                                 <div class="flex items-start gap-2.5">
@@ -451,10 +378,10 @@
                                     <div class="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
                                         <p class="font-semibold mb-1">Informasi Penting</p>
                                         <ul class="list-disc list-inside space-y-0.5 text-amber-700 dark:text-amber-400">
-                                            <li>Dapatkan API key di <strong>dashboard.midtrans.com</strong> dan <strong>dashboard.xendit.co</strong></li>
+                                            <li>Dapatkan API key di <strong>dashboard.midtrans.com</strong></li>
                                             <li>Gunakan mode <strong>Sandbox</strong> untuk testing sebelum beralih ke Production</li>
-                                            <li>Pastikan webhook URL sudah dikonfigurasi di dashboard masing-masing gateway</li>
-                                            <li><strong>Jangan bagikan Server Key / API Key</strong> ke pihak yang tidak berwenang</li>
+                                            <li>Pastikan webhook/notification URL sudah dikonfigurasi di dashboard Midtrans</li>
+                                            <li><strong>Jangan bagikan Server Key</strong> ke pihak yang tidak berwenang</li>
                                         </ul>
                                     </div>
                                 </div>

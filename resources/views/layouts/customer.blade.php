@@ -59,7 +59,7 @@
                             </button>
 
                             <!-- Cart Icon -->
-                            <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition duration-150">
+                            <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition duration-150" title="Keranjang Belanja">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
@@ -69,6 +69,25 @@
                                     </span>
                                 @endif
                             </a>
+
+                            <!-- Shipping Icon (Only for authenticated users) -->
+                            @auth
+                                @php
+                                    $shippingCount = \App\Models\Order::where('user_id', auth()->id())
+                                        ->where('status', 'shipping')
+                                        ->count();
+                                @endphp
+                                @if($shippingCount > 0)
+                                    <a href="{{ route('orders.index') }}" class="relative p-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition duration-150" title="Pesanan Sedang Dikirim">
+                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
+                                        </svg>
+                                        <span class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-blue-600 rounded-full animate-pulse">
+                                            {{ $shippingCount }}
+                                        </span>
+                                    </a>
+                                @endif
+                            @endauth
 
                             <!-- Authentication Links -->
                             @auth

@@ -45,21 +45,12 @@
                                         </div>
                                     </label>
                                 @endforeach
-                                <label class="block p-3 border-2 rounded-xl cursor-pointer transition-all duration-200 hover:border-indigo-300"
-                                       :class="selectedAddress === 'manual' ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20' : 'border-gray-200 dark:border-gray-700'">
-                                    <div class="flex items-center gap-3">
-                                        <input type="radio" name="address_choice" value="manual"
-                                               @click="selectManual()"
-                                               class="text-indigo-600 focus:ring-indigo-500">
-                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">✍️ Tulis alamat baru</span>
-                                    </div>
-                                </label>
                             </div>
                         @endif
 
-                        <textarea name="shipping_address" rows="4" required x-ref="addressInput"
-                            placeholder="Masukkan alamat lengkap pengiriman (Nama penerima, No. HP, Alamat, Kelurahan, Kecamatan, Kota, Provinsi, Kode Pos)"
-                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm resize-none">{{ old('shipping_address') }}</textarea>
+                        <textarea name="shipping_address" rows="4" required x-ref="addressInput" readonly
+                            placeholder="Pilih alamat pengiriman dari daftar di atas"
+                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:ring-indigo-500 focus:border-indigo-500 text-sm resize-none bg-gray-50 dark:bg-gray-800">{{ old('shipping_address') }}</textarea>
                         @error('shipping_address')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
@@ -89,26 +80,14 @@
                                 </label>
                             @else
                                 {{-- Midtrans --}}
-                                <label class="flex items-start gap-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50 dark:has-[:checked]:bg-indigo-900/20">
-                                    <input type="radio" name="payment_gateway" value="midtrans" class="mt-1 text-indigo-600 focus:ring-indigo-500" {{ old('payment_gateway', 'midtrans') === 'midtrans' ? 'checked' : '' }}>
+                                <label class="flex items-start gap-4 p-4 border-2 border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 rounded-xl cursor-pointer">
+                                    <input type="radio" name="payment_gateway" value="midtrans" class="mt-1 text-indigo-600 focus:ring-indigo-500" checked>
                                     <div class="flex-grow">
                                         <div class="flex items-center gap-2">
                                             <span class="text-2xl">🏦</span>
                                             <span class="font-bold text-gray-900 dark:text-white">Midtrans</span>
                                         </div>
                                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Bayar via GoPay, QRIS, Bank Transfer, Kartu Kredit</p>
-                                    </div>
-                                </label>
-
-                                {{-- Xendit --}}
-                                <label class="flex items-start gap-4 p-4 border-2 border-gray-200 dark:border-gray-600 rounded-xl cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-500 transition-colors has-[:checked]:border-indigo-500 has-[:checked]:bg-indigo-50 dark:has-[:checked]:bg-indigo-900/20">
-                                    <input type="radio" name="payment_gateway" value="xendit" class="mt-1 text-indigo-600 focus:ring-indigo-500" {{ old('payment_gateway') === 'xendit' ? 'checked' : '' }}>
-                                    <div class="flex-grow">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-2xl">💰</span>
-                                            <span class="font-bold text-gray-900 dark:text-white">Xendit</span>
-                                        </div>
-                                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Bayar via Virtual Account, E-Wallet, Retail Outlet</p>
                                     </div>
                                 </label>
                             @endif
@@ -204,32 +183,20 @@
                     const checkedRadio = this.$el.querySelector('input[name="address_choice"]:checked');
                     if (checkedRadio) {
                         const val = checkedRadio.value;
-                        if (val === 'manual') {
-                            this.selectedAddress = 'manual';
-                        } else {
-                            this.selectedAddress = parseInt(val);
-                            @if($savedAddresses->count() > 0)
-                                const defaultAddr = @json($savedAddresses->firstWhere('is_default', true) ?? $savedAddresses->first());
-                                if (defaultAddr && defaultAddr.id === this.selectedAddress) {
-                                    this.$refs.addressInput.value = defaultAddr.recipient_name + ' (' + defaultAddr.phone + ')\n' + defaultAddr.full_address;
-                                    this.$refs.addressInput.readOnly = true;
-                                }
-                            @endif
-                        }
-                    } else {
-                        this.selectedAddress = 'manual';
+                        this.selectedAddress = parseInt(val);
+                        @if($savedAddresses->count() > 0)
+                            const defaultAddr = @json($savedAddresses->firstWhere('is_default', true) ?? $savedAddresses->first());
+                            if (defaultAddr && defaultAddr.id === this.selectedAddress) {
+                                this.$refs.addressInput.value = defaultAddr.recipient_name + ' (' + defaultAddr.phone + ')\n' + defaultAddr.full_address;
+                                this.$refs.addressInput.readOnly = true;
+                            }
+                        @endif
                     }
                 },
                 selectSaved(id, text) {
                     this.selectedAddress = id;
                     this.$refs.addressInput.value = text;
                     this.$refs.addressInput.readOnly = true;
-                },
-                selectManual() {
-                    this.selectedAddress = 'manual';
-                    this.$refs.addressInput.value = '';
-                    this.$refs.addressInput.readOnly = false;
-                    this.$refs.addressInput.focus();
                 }
             };
         }
@@ -259,7 +226,7 @@
                 return;
             }
 
-            const gatewayNames = { midtrans: 'Midtrans', xendit: 'Xendit', transfer: 'Transfer Bank Manual (BCA)' };
+            const gatewayNames = { midtrans: 'Midtrans', transfer: 'Transfer Bank Manual (BCA)' };
             const gatewayName = gatewayNames[gateway.value] || gateway.value;
 
             window.Swal.fire({

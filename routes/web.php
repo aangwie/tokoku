@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CustomerSettingController;
 use App\Http\Controllers\WebhookController;
+use App\Http\Controllers\Payment\MidtransCallbackController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\CouponController as AdminCouponController;
@@ -103,13 +104,20 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 /*
 |--------------------------------------------------------------------------
-| Webhook Routes (No CSRF - External Callbacks)
+| Payment Callback Routes (No CSRF - External Callbacks)
 |--------------------------------------------------------------------------
 */
-Route::prefix('webhook')->group(function () {
-    Route::post('/midtrans', [WebhookController::class, 'midtrans'])->name('webhook.midtrans');
-    Route::post('/xendit', [WebhookController::class, 'xendit'])->name('webhook.xendit');
-});
+// Midtrans HTTP Notification (Webhook)
+Route::post('/webhook/midtrans/notification', [MidtransCallbackController::class, 'notification'])
+    ->name('midtrans.notification');
+
+// Midtrans Redirect URLs (After Payment)
+Route::get('/payment/midtrans/finish', [MidtransCallbackController::class, 'finish'])
+    ->name('midtrans.finish');
+Route::get('/payment/midtrans/unfinish', [MidtransCallbackController::class, 'unfinish'])
+    ->name('midtrans.unfinish');
+Route::get('/payment/midtrans/error', [MidtransCallbackController::class, 'error'])
+    ->name('midtrans.error');
 
 /*
 |--------------------------------------------------------------------------
