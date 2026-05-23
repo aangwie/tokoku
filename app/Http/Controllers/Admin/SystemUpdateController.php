@@ -365,14 +365,27 @@ class SystemUpdateController extends Controller
             $output = [];
             
             $output[] = "=== Creating Storage Link ===";
+            $output[] = "OS: " . PHP_OS;
+            $output[] = "";
             
             // Check if link already exists
             $publicStoragePath = public_path('storage');
+            
             if (file_exists($publicStoragePath)) {
-                if (is_link($publicStoragePath)) {
+                // Check if it's a symbolic link (works on both Windows and Unix)
+                $isSymlink = is_link($publicStoragePath);
+                
+                if ($isSymlink) {
                     $output[] = "Storage link already exists!";
                     $output[] = "Link: " . $publicStoragePath;
-                    $output[] = "Target: " . readlink($publicStoragePath);
+                    
+                    // Try to get the target (may fail on Windows)
+                    try {
+                        $target = readlink($publicStoragePath);
+                        $output[] = "Target: " . $target;
+                    } catch (\Exception $e) {
+                        $output[] = "Target: " . storage_path('app/public') . " (expected)";
+                    }
                     
                     return response()->json([
                         'success' => true,
@@ -381,7 +394,10 @@ class SystemUpdateController extends Controller
                     ]);
                 } else {
                     $output[] = "Warning: 'public/storage' exists but is not a symbolic link!";
-                    $output[] = "Please remove it manually first.";
+                    $output[] = "Path: " . $publicStoragePath;
+                    $output[] = "";
+                    $output[] = "Please remove or rename this directory manually first.";
+                    $output[] = "Then run this command again.";
                     
                     return response()->json([
                         'success' => false,
@@ -391,16 +407,31 @@ class SystemUpdateController extends Controller
                 }
             }
             
-            // Create the symbolic link
-            Artisan::call('storage:link');
-            $output[] = Artisan::output();
+            // Create the symbolic link using Artisan command
+            $output[] = "Creating symbolic link...";
+            $output[] = "";
+            
+            try {
+                Artisan::call('storage:link');
+                $artisanOutput = Artisan::output();
+                $output[] = $artisanOutput;
+            } catch (\Exception $e) {
+                $output[] = "Artisan Error: " . $e->getMessage();
+                
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gagal membuat storage link: ' . $e->getMessage(),
+                    'output' => implode("\n", $output)
+                ]);
+            }
             
             $output[] = "";
             $output[] = "=== Storage Link Created Successfully! ===";
             $output[] = "Link: " . $publicStoragePath;
             $output[] = "Target: " . storage_path('app/public');
             $output[] = "";
-            $output[] = "Gambar produk sekarang dapat diakses melalui URL public/storage/";
+            $output[] = "✓ Gambar produk sekarang dapat diakses melalui URL /storage/";
+            $output[] = "✓ Contoh: /storage/products/image.webp";
 
             return response()->json([
                 'success' => true,
@@ -409,10 +440,14 @@ class SystemUpdateController extends Controller
             ]);
 
         } catch (\Exception $e) {
+            Log::error('Storage Link Error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Error: ' . $e->getMessage(),
-                'output' => $e->getTraceAsString()
+                'output' => "Error Details:\n" . $e->getMessage() . "\n\nFile: " . $e->getFile() . "\nLine: " . $e->getLine()
             ]);
         }
     }
