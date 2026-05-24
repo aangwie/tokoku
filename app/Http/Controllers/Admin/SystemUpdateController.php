@@ -72,11 +72,27 @@ class SystemUpdateController extends Controller
             $output[] = "";
 
             // Check git status before pull
+            $hasUncommittedChanges = false;
             exec('git status --porcelain 2>&1', $statusOutput);
             if (!empty($statusOutput)) {
-                $output[] = "=== Warning: Uncommitted Changes ===";
+                $hasUncommittedChanges = true;
+                $output[] = "=== Warning: Uncommitted Changes Detected ===";
                 $output[] = implode("\n", $statusOutput);
                 $output[] = "";
+                $output[] = "=== Auto-Stashing Changes ===";
+                
+                // Stash uncommitted changes (including untracked files)
+                exec('git stash push -u -m "Auto-stash before pull update" 2>&1', $stashOutput, $stashReturn);
+                $output[] = implode("\n", $stashOutput);
+                $output[] = "";
+                
+                if ($stashReturn !== 0) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Gagal melakukan git stash!',
+                        'output' => implode("\n", $output)
+                    ]);
+                }
             }
 
             // Fetch updates
@@ -132,10 +148,23 @@ class SystemUpdateController extends Controller
 
             $output[] = "=== Update Berhasil! ===";
             $output[] = "Aplikasi berhasil diupdate ke versi terbaru.";
+            
+            // Inform about stashed changes
+            if ($hasUncommittedChanges) {
+                $output[] = "";
+                $output[] = "=== Perubahan Lokal Tersimpan ===";
+                $output[] = "Perubahan lokal Anda telah disimpan di git stash.";
+                $output[] = "";
+                $output[] = "Untuk melihat stash: git stash list";
+                $output[] = "Untuk restore stash: git stash pop";
+                $output[] = "Untuk hapus stash: git stash drop";
+                $output[] = "";
+                $output[] = "⚠️ CATATAN: File error_log dan build.zip sebaiknya ditambahkan ke .gitignore";
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Update berhasil! ' . $updateCount . ' commit diterapkan.',
+                'message' => 'Update berhasil! ' . $updateCount . ' commit diterapkan.' . ($hasUncommittedChanges ? ' (Perubahan lokal di-stash)' : ''),
                 'output' => implode("\n", $output)
             ]);
 
