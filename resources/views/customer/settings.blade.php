@@ -128,9 +128,7 @@
                         <form :action="editingAddress ? '{{ url('/settings/address') }}/' + editingAddress : '{{ route('customer.address.store') }}'" method="POST"
                               class="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-950/20 dark:to-blue-950/20 rounded-2xl border border-cyan-200 dark:border-cyan-800 p-6">
                             @csrf
-                            <template x-if="editingAddress">
-                                <input type="hidden" name="_method" value="PUT">
-                            </template>
+                            <input type="hidden" name="_method" x-bind:value="editingAddress ? 'PUT' : 'POST'">
 
                             <h4 class="font-bold text-gray-900 dark:text-white mb-4" x-text="editingAddress ? 'Edit Alamat' : 'Tambah Alamat Baru'"></h4>
 
@@ -357,9 +355,7 @@
                         <form :action="editingBank ? '{{ url('/settings/bank-account') }}/' + editingBank : '{{ route('customer.bank.store') }}'" method="POST"
                               class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-6">
                             @csrf
-                            <template x-if="editingBank">
-                                <input type="hidden" name="_method" value="PUT">
-                            </template>
+                            <input type="hidden" name="_method" x-bind:value="editingBank ? 'PUT' : 'POST'">
 
                             <h4 class="font-bold text-gray-900 dark:text-white mb-4" x-text="editingBank ? 'Edit Rekening Bank' : 'Tambah Rekening Bank Baru'"></h4>
 
