@@ -291,7 +291,7 @@
                                             Edit
                                         </button>
                                         <form action="{{ route('customer.address.destroy', $addr) }}" method="POST"
-                                              onsubmit="return confirm('Hapus alamat ini?')">
+                                              onsubmit="return confirmDelete(event, 'Hapus alamat ini?', 'Alamat akan dihapus permanen')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -445,7 +445,7 @@
                                             Edit
                                         </button>
                                         <form action="{{ route('customer.bank.destroy', $bank) }}" method="POST"
-                                              onsubmit="return confirm('Hapus rekening ini?')">
+                                              onsubmit="return confirmDelete(event, 'Hapus rekening ini?', 'Rekening akan dihapus permanen')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"
@@ -668,6 +668,29 @@
                     this.showBankForm = true;
                 }
             };
+        }
+
+        // SweetAlert2 Confirmation for Delete
+        function confirmDelete(event, title, text) {
+            event.preventDefault();
+            
+            Swal.fire({
+                title: title || 'Apakah Anda yakin?',
+                text: text || 'Data akan dihapus permanen',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    event.target.submit();
+                }
+            });
+            
+            return false;
         }
 
     </script>
