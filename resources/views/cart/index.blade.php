@@ -17,6 +17,22 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- Cart Items --}}
                 <div class="lg:col-span-2 space-y-4">
+                    {{-- Clear Cart Button --}}
+                    <div class="flex justify-between items-center mb-4">
+                        <p class="text-gray-600 dark:text-gray-400">
+                            <span class="font-semibold text-gray-900 dark:text-white">{{ count($cart) }}</span> produk di keranjang
+                        </p>
+                        <form id="clear-cart-form" action="{{ route('cart.clear') }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" onclick="confirmClearCart()"
+                                class="inline-flex items-center px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/50 font-medium rounded-lg transition-all duration-200 border border-red-200 dark:border-red-800">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                Kosongkan Keranjang
+                            </button>
+                        </form>
+                    </div>
+
                     @foreach($cart as $id => $item)
                         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4 hover:shadow-lg transition-shadow duration-200">
                             {{-- Product Image --}}
@@ -151,6 +167,23 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     document.getElementById('remove-form-' + id).submit();
+                }
+            });
+        }
+
+        function confirmClearCart() {
+            window.Swal.fire({
+                title: 'Kosongkan Keranjang?',
+                text: 'Apakah Anda yakin ingin menghapus semua produk dari keranjang belanja?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Kosongkan!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('clear-cart-form').submit();
                 }
             });
         }

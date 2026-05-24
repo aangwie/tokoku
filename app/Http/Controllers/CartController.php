@@ -136,6 +136,14 @@ class CartController extends Controller
         return redirect()->route('cart.index')->with('success', 'Produk dihapus dari keranjang!');
     }
 
+    public function clear()
+    {
+        session()->forget('cart');
+        session()->forget('coupon');
+        
+        return redirect()->route('cart.index')->with('success', 'Keranjang berhasil dikosongkan!');
+    }
+
     public function applyCoupon(Request $request)
     {
         $request->validate([

@@ -20,10 +20,10 @@ class DatabaseSeeder extends Seeder
     {
         // 1. Buat User Admin
         User::updateOrCreate(
-            ['email' => 'admin@example.com'],
+            ['email' => 'wirawan.aang5@gmail.com'],
             [
                 'name' => 'Admin Toko',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('A4n6w!r4w4n'), // Pastikan untuk mengganti dengan password yang kuat
                 'role' => 'admin',
             ]
         );
@@ -146,8 +146,8 @@ class DatabaseSeeder extends Seeder
         );
 
         // 6. Pengaturan Toko (Settings)
-        Setting::set('store_name', 'BN Boutique');
-        Setting::set('store_logo', 'images/store_logo.png');
+        Setting::set('store_name', 'Toko BillNesia');
+        Setting::set('store_logo', 'images/store_logo.jpg');
         Setting::set('payment_method', 'paymentgateway');
     }
 }

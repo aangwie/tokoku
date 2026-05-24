@@ -170,11 +170,6 @@
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Provinsi</label>
                                     <select name="province_code" x-model="addressForm.province_code" @change="onProvinceChange" required
-                                            data-hs-select='{
-                                                "hasSearch": true,
-                                                "searchPlaceholder": "Cari provinsi...",
-                                                "placeholder": "Pilih Provinsi"
-                                            }'
                                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2.5">
                                         <option value="">Pilih Provinsi</option>
                                         <template x-for="province in provinces" :key="province.id">
@@ -186,11 +181,6 @@
                                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Kota/Kabupaten</label>
                                     <select name="city_code" x-model="addressForm.city_code" @change="onCityChange" required
                                             :disabled="!addressForm.province_code"
-                                            data-hs-select='{
-                                                "hasSearch": true,
-                                                "searchPlaceholder": "Cari kota/kabupaten...",
-                                                "placeholder": "Pilih Kota/Kabupaten"
-                                            }'
                                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2.5 disabled:opacity-50">
                                         <option value="">Pilih Kota/Kabupaten</option>
                                         <template x-for="city in cities" :key="city.id">
@@ -205,11 +195,6 @@
                                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Kecamatan</label>
                                     <select name="district_code" x-model="addressForm.district_code" @change="onDistrictChange" required
                                             :disabled="!addressForm.city_code"
-                                            data-hs-select='{
-                                                "hasSearch": true,
-                                                "searchPlaceholder": "Cari kecamatan...",
-                                                "placeholder": "Pilih Kecamatan"
-                                            }'
                                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2.5 disabled:opacity-50">
                                         <option value="">Pilih Kecamatan</option>
                                         <template x-for="district in districts" :key="district.id">
@@ -221,11 +206,6 @@
                                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Kelurahan/Desa</label>
                                     <select name="village_code" x-model="addressForm.village_code" @change="updateFullAddress" required
                                             :disabled="!addressForm.district_code"
-                                            data-hs-select='{
-                                                "hasSearch": true,
-                                                "searchPlaceholder": "Cari kelurahan/desa...",
-                                                "placeholder": "Pilih Kelurahan/Desa"
-                                            }'
                                             class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-cyan-500 focus:ring-cyan-500 px-3 py-2.5 disabled:opacity-50">
                                         <option value="">Pilih Kelurahan/Desa</option>
                                         <template x-for="village in villages" :key="village.id">
@@ -392,7 +372,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Nomor Rekening</label>
-                                    <input type="text" name="account_number" x-model="bankForm.account_number" required
+                                    <input type="number" name="account_number" x-model="bankForm.account_number" required
                                            placeholder="Contoh: 1234567890"
                                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white text-sm shadow-sm focus:border-emerald-500 focus:ring-emerald-500 px-3 py-2.5" />
                                 </div>
@@ -532,15 +512,24 @@
                 bankForm: { bank_name: '', account_number: '', account_holder: '', is_default: false },
 
                 async init() {
+                    console.log('Initializing customerSettings...');
                     await this.loadProvinces();
+                    console.log('Provinces loaded:', this.provinces.length);
                 },
 
                 async loadProvinces() {
                     try {
+                        console.log('Fetching provinces...');
                         const response = await fetch('/api/provinces');
-                        this.provinces = await response.json();
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+                        this.provinces = data;
+                        console.log('Provinces data:', this.provinces);
                     } catch (error) {
                         console.error('Failed to load provinces:', error);
+                        alert('Gagal memuat data provinsi. Silakan refresh halaman.');
                     }
                 },
 
