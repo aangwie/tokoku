@@ -71,7 +71,7 @@ class CustomerSettingController extends Controller
     public function updateAddress(Request $request, CustomerAddress $address)
     {
         // Pastikan alamat milik user yang login
-        if ($address->user_id !== Auth::id()) {
+        if ($address->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -113,7 +113,7 @@ class CustomerSettingController extends Controller
      */
     public function destroyAddress(CustomerAddress $address)
     {
-        if ($address->user_id !== Auth::id()) {
+        if ($address->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -166,7 +166,7 @@ class CustomerSettingController extends Controller
      */
     public function updateBankAccount(Request $request, CustomerBankAccount $bankAccount)
     {
-        if ($bankAccount->user_id !== Auth::id()) {
+        if ($bankAccount->user_id != Auth::id()) {
             abort(403);
         }
 
@@ -196,7 +196,7 @@ class CustomerSettingController extends Controller
      */
     public function destroyBankAccount(CustomerBankAccount $bankAccount)
     {
-        if ($bankAccount->user_id !== Auth::id()) {
+        if ($bankAccount->user_id != Auth::id()) {
             abort(403);
         }
 
