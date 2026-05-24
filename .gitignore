@@ -1,4 +1,7 @@
 *.log
+error_log
+build.zip
+public/build.zip
 .DS_Store
 .env
 .env.backup
