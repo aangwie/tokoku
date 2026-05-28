@@ -3,25 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Coupon;
-use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Services\MidtransService;
 use App\Services\XenditService;
+use App\Services\PaymentService;
+use App\Services\ShippingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CartController extends Controller
 {
     protected $midtransService;
     protected $xenditService;
+    protected $shippingService;
 
-    public function __construct(MidtransService $midtransService, XenditService $xenditService)
-    {
+    public function __construct(
+        MidtransService $midtransService, 
+        XenditService $xenditService,
+        ShippingService $shippingService
+    ) {
         $this->midtransService = $midtransService;
         $this->xenditService = $xenditService;
+        $this->shippingService = $shippingService;
     }
 
     public function index()
@@ -35,10 +43,25 @@ class CartController extends Controller
             $totalWeight += $item['weight'] * $item['quantity'];
         }
 
-        // Hitung Ongkos Kirim dari pengaturan admin
+        // Hitung Ongkos Kirim - cek apakah ada produk yang memerlukan ongkir berbayar
         $shippingCost = 0;
+        $hasNonFreeShipping = false;
+        
         if (count($cart) > 0) {
-            $shippingCost = (float) Setting::get('shipping_cost', '0');
+            // Cek setiap produk di cart apakah ada yang berbayar ongkir
+            foreach ($cart as $productId => $item) {
+                $product = Product::find($productId);
+                if ($product && !$product->is_free_shipping) {
+                    $hasNonFreeShipping = true;
+                    break;
+                }
+            }
+            
+            // Jika ada produk berbayar ongkir, gunakan fixed cost sebagai estimasi
+            // (Ongkir sebenarnya akan dihitung saat checkout berdasarkan alamat)
+            if ($hasNonFreeShipping) {
+                $shippingCost = (float) Setting::get('shipping_cost', '0');
+            }
         }
 
         // Terapkan kupon jika ada di sesi
@@ -213,6 +236,7 @@ class CartController extends Controller
 
         $request->validate([
             'shipping_address' => 'required|string',
+            'city_code' => 'nullable|string',
             'payment_gateway' => 'required|in:' . $allowedGateways,
         ]);
 
@@ -224,13 +248,39 @@ class CartController extends Controller
         // Hitung ulang total di backend untuk keamanan
         $subtotal = 0;
         $totalWeight = 0;
-        foreach ($cart as $item) {
+        
+        // Prepare cart items with product details for shipping calculation
+        $cartItemsWithDetails = [];
+        foreach ($cart as $productId => $item) {
+            $product = Product::find($productId);
+            $cartItemsWithDetails[] = [
+                'price' => $item['price'],
+                'quantity' => $item['quantity'],
+                'weight' => $item['weight'],
+                'is_free_shipping' => $product ? $product->is_free_shipping : true,
+            ];
+            
             $subtotal += $item['price'] * $item['quantity'];
             $totalWeight += $item['weight'] * $item['quantity'];
         }
 
-        // Ambil ongkos kirim dari pengaturan admin
-        $shippingCost = (float) Setting::get('shipping_cost', '0');
+        // Hitung ongkos kirim - gunakan API jika city_code tersedia, jika tidak gunakan fixed cost
+        $shippingCost = 0;
+        if ($request->city_code && $this->shippingService->isConfigured()) {
+            // Gunakan ShippingService untuk perhitungan dinamis
+            $shippingCost = $this->shippingService->calculateCartShipping(
+                $cartItemsWithDetails,
+                $request->city_code
+            );
+            
+            // Jika API gagal atau return 0, fallback ke fixed cost
+            if ($shippingCost == 0) {
+                $shippingCost = (float) Setting::get('shipping_cost', '0');
+            }
+        } else {
+            // Fallback ke ongkos kirim fixed dari pengaturan admin
+            $shippingCost = (float) Setting::get('shipping_cost', '0');
+        }
 
         $discountAmount = 0;
         $coupon = session()->get('coupon');

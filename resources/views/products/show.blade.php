@@ -36,8 +36,27 @@
                         </div>
                         <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white mb-2">{{ $product->name }}</h1>
                         
-                        <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mb-6">
+                        <div class="text-2xl font-black text-indigo-600 dark:text-indigo-400 mb-4">
                             Rp {{ number_format($product->price, 0, ',', '.') }}
+                        </div>
+
+                        <!-- Shipping Indicator -->
+                        <div class="mb-6">
+                            @if($product->is_free_shipping)
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-green-50 dark:bg-green-900/20 rounded-full">
+                                    <svg class="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                                    </svg>
+                                    <span class="text-sm font-semibold text-green-700 dark:text-green-400">Gratis Ongkir</span>
+                                </div>
+                            @else
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 bg-red-50 dark:bg-red-900/20 rounded-full">
+                                    <svg class="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>
+                                    </svg>
+                                    <span class="text-sm font-semibold text-red-700 dark:text-red-400">Ongkir Berbayar</span>
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Product Specs -->

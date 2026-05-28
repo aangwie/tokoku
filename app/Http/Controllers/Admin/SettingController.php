@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\Province;
+use App\Models\City;
 use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -25,10 +27,8 @@ class SettingController extends Controller
         $settings = [
             'store_name' => Setting::get('store_name', config('app.name')),
             'store_whatsapp' => Setting::get('store_whatsapp', '6281234567890'),
-            'store_address' => Setting::get('store_address', ''),
             'store_logo' => Setting::get('store_logo'),
             'payment_method' => Setting::get('payment_method', 'paymentgateway'),
-            'shipping_cost' => Setting::get('shipping_cost', '0'),
 
             // Bank Transfer settings
             'bank_accounts' => json_decode(Setting::get('bank_accounts', '[]'), true) ?: [],
@@ -41,9 +41,20 @@ class SettingController extends Controller
             // Xendit settings
             'xendit_api_key' => Setting::get('xendit_api_key', config('services.xendit.api_key', '')),
             'xendit_callback_token' => Setting::get('xendit_callback_token', config('services.xendit.callback_token', '')),
+
+            // Shipping API settings
+            'shipping_api_key' => Setting::get('shipping_api_key', ''),
+            'store_province_code' => Setting::get('store_province_code', ''),
+            'store_city_code' => Setting::get('store_city_code', ''),
+            'preferred_courier' => Setting::get('preferred_courier', 'jne'),
+            'shipping_cost' => Setting::get('shipping_cost', '10000'),
         ];
 
-        return view('admin.settings.edit', compact('settings'));
+        // Fetch provinces and cities for dropdowns
+        $provinces = Province::orderBy('name')->get();
+        $cities = City::orderBy('name')->get();
+
+        return view('admin.settings.edit', compact('settings', 'provinces', 'cities'));
     }
 
     /**
@@ -54,10 +65,8 @@ class SettingController extends Controller
         $request->validate([
             'store_name' => 'required|string|max:255',
             'store_whatsapp' => 'nullable|string|max:20|regex:/^[0-9]+$/',
-            'store_address' => 'nullable|string|max:500',
             'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:1024',
             'payment_method' => 'nullable|in:paymentgateway,transfer',
-            'shipping_cost' => 'nullable|numeric|min:0',
 
             // Bank transfer validation
             'bank_accounts' => 'nullable|array',
@@ -73,6 +82,13 @@ class SettingController extends Controller
             // Xendit validation
             'xendit_api_key' => 'nullable|string|max:255',
             'xendit_callback_token' => 'nullable|string|max:255',
+
+            // Shipping API validation
+            'shipping_api_key' => 'nullable|string|max:255',
+            'store_province_code' => 'nullable|string|max:20',
+            'store_city_code' => 'nullable|string|max:20',
+            'preferred_courier' => 'nullable|string|in:jne,tiki,pos,jnt,sicepat,anteraja',
+            'shipping_cost' => 'nullable|numeric|min:0',
         ]);
 
         // Update store name
@@ -81,15 +97,9 @@ class SettingController extends Controller
         // Update store whatsapp
         Setting::set('store_whatsapp', $request->input('store_whatsapp', ''));
 
-        // Update store address
-        Setting::set('store_address', $request->input('store_address', ''));
-
         // Update payment method
         $paymentMethod = $request->payment_method ?? 'paymentgateway';
         Setting::set('payment_method', $paymentMethod);
-
-        // Update shipping cost
-        Setting::set('shipping_cost', $request->input('shipping_cost', '0'));
 
         // Save bank accounts as JSON
         $bankAccounts = $request->input('bank_accounts', []);
@@ -107,6 +117,13 @@ class SettingController extends Controller
         // Save Xendit settings
         Setting::set('xendit_api_key', $request->input('xendit_api_key', ''));
         Setting::set('xendit_callback_token', $request->input('xendit_callback_token', ''));
+
+        // Save Shipping API settings
+        Setting::set('shipping_api_key', $request->input('shipping_api_key', ''));
+        Setting::set('store_province_code', $request->input('store_province_code', ''));
+        Setting::set('store_city_code', $request->input('store_city_code', ''));
+        Setting::set('preferred_courier', $request->input('preferred_courier', 'jne'));
+        Setting::set('shipping_cost', $request->input('shipping_cost', '10000'));
 
         // Handle logo upload
         if ($request->hasFile('store_logo')) {

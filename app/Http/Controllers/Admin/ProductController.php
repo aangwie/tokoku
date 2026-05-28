@@ -44,7 +44,6 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:512',
             'is_free_shipping' => 'required|boolean',
-            'shipping_cost' => 'required_if:is_free_shipping,0|nullable|numeric|min:0',
         ]);
 
         $imagePath = null;
@@ -62,7 +61,6 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'image' => $imagePath,
             'is_free_shipping' => $request->is_free_shipping,
-            'shipping_cost' => $request->is_free_shipping ? null : $request->shipping_cost,
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dibuat!');
@@ -86,7 +84,6 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:512',
             'is_free_shipping' => 'required|boolean',
-            'shipping_cost' => 'required_if:is_free_shipping,0|nullable|numeric|min:0',
         ]);
 
         $imagePath = $product->image;
@@ -109,7 +106,6 @@ class ProductController extends Controller
             'stock' => $request->stock,
             'image' => $imagePath,
             'is_free_shipping' => $request->is_free_shipping,
-            'shipping_cost' => $request->is_free_shipping ? null : $request->shipping_cost,
         ]);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui!');

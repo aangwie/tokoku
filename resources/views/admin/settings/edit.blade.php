@@ -70,48 +70,6 @@
                             @enderror
                         </div>
 
-                        {{-- Store Address --}}
-                        <div class="mb-8">
-                            <label for="store_address" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Alamat Toko
-                            </label>
-                            <textarea
-                                name="store_address"
-                                id="store_address"
-                                rows="3"
-                                class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 px-4 py-3"
-                                placeholder="Masukkan alamat lengkap toko..."
-                            >{{ old('store_address', $settings['store_address'] ?? '') }}</textarea>
-                            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Alamat lengkap toko yang akan ditampilkan di footer website.</p>
-                            @error('store_address')
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        {{-- Shipping Cost --}}
-                        <div class="mb-8">
-                            <label for="shipping_cost" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                                Ongkos Kirim
-                            </label>
-                            <div class="relative">
-                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">Rp</span>
-                                <input
-                                    type="number"
-                                    name="shipping_cost"
-                                    id="shipping_cost"
-                                    value="{{ old('shipping_cost', $settings['shipping_cost'] ?? '0') }}"
-                                    min="0"
-                                    step="1000"
-                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 pl-12 pr-4 py-3"
-                                    placeholder="0"
-                                />
-                            </div>
-                            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Biaya ongkos kirim yang akan dikenakan pada setiap pesanan. Masukkan 0 untuk ongkir gratis.</p>
-                            @error('shipping_cost')
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
                         {{-- Store Logo --}}
                         <div class="mb-8">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
@@ -430,6 +388,149 @@
                             </div>
                         </div>
 
+                        {{-- ==================== SECTION: Konfigurasi API Ongkos Kirim ==================== --}}
+                        <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
+                            <div class="flex items-center gap-3 mb-6">
+                                <div class="p-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-lg">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Konfigurasi API Ongkos Kirim</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-400">Integrasi dengan API ongkos kirim Indonesia untuk perhitungan otomatis</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-950/30 dark:to-red-950/30 rounded-2xl border border-orange-200 dark:border-orange-800 p-6 space-y-6">
+                                {{-- API Key --}}
+                                <div>
+                                    <label for="shipping_api_key" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        API Key <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text"
+                                           id="shipping_api_key"
+                                           name="shipping_api_key"
+                                           value="{{ old('shipping_api_key', $settings['shipping_api_key']) }}"
+                                           placeholder="Masukkan API key dari api.co.id"
+                                           class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 px-4 py-2.5 transition duration-200">
+                                    @error('shipping_api_key')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                    <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                        Dapatkan API key di <a href="https://docs.api.co.id/products/indonesia-expedition-cost/" target="_blank" class="text-orange-600 hover:text-orange-700 font-medium underline">docs.api.co.id</a>
+                                    </p>
+                                </div>
+
+                                {{-- Store Location --}}
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="locationSelector()">
+                                    {{-- Province --}}
+                                    <div>
+                                        <label for="store_province_code" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                            Provinsi Toko <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="store_province_code"
+                                                name="store_province_code"
+                                                x-model="selectedProvince"
+                                                @change="filterCities()"
+                                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 px-4 py-2.5 transition duration-200">
+                                            <option value="">-- Pilih Provinsi --</option>
+                                            @foreach($provinces as $province)
+                                                <option value="{{ $province->code }}" {{ old('store_province_code', $settings['store_province_code']) == $province->code ? 'selected' : '' }}>
+                                                    {{ $province->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('store_province_code')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Pilih provinsi lokasi toko (origin pengiriman)</p>
+                                    </div>
+
+                                    {{-- City --}}
+                                    <div>
+                                        <label for="store_city_code" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                            Kota/Kabupaten Toko <span class="text-red-500">*</span>
+                                        </label>
+                                        <select id="store_city_code"
+                                                name="store_city_code"
+                                                x-model="selectedCity"
+                                                :disabled="!selectedProvince"
+                                                class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 px-4 py-2.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                                            <option value="">-- Pilih Kota/Kabupaten --</option>
+                                            <template x-for="city in filteredCities" :key="city.code">
+                                                <option :value="city.code" x-text="city.name" :selected="city.code === '{{ old('store_city_code', $settings['store_city_code']) }}'"></option>
+                                            </template>
+                                        </select>
+                                        @error('store_city_code')
+                                            <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                        @enderror
+                                        <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Pilih kota/kabupaten lokasi toko</p>
+                                    </div>
+                                </div>
+
+                                {{-- Preferred Courier --}}
+                                <div>
+                                    <label for="preferred_courier" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        Kurir Pilihan <span class="text-red-500">*</span>
+                                    </label>
+                                    <select id="preferred_courier"
+                                            name="preferred_courier"
+                                            class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 px-4 py-2.5 transition duration-200">
+                                        <option value="jne" {{ old('preferred_courier', $settings['preferred_courier']) == 'jne' ? 'selected' : '' }}>JNE</option>
+                                        <option value="tiki" {{ old('preferred_courier', $settings['preferred_courier']) == 'tiki' ? 'selected' : '' }}>TIKI</option>
+                                        <option value="pos" {{ old('preferred_courier', $settings['preferred_courier']) == 'pos' ? 'selected' : '' }}>POS Indonesia</option>
+                                        <option value="jnt" {{ old('preferred_courier', $settings['preferred_courier']) == 'jnt' ? 'selected' : '' }}>J&T Express</option>
+                                        <option value="sicepat" {{ old('preferred_courier', $settings['preferred_courier']) == 'sicepat' ? 'selected' : '' }}>SiCepat</option>
+                                        <option value="anteraja" {{ old('preferred_courier', $settings['preferred_courier']) == 'anteraja' ? 'selected' : '' }}>AnterAja</option>
+                                    </select>
+                                    @error('preferred_courier')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                    <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">Kurir yang akan digunakan untuk perhitungan ongkos kirim</p>
+                                </div>
+
+                                {{-- Fallback Shipping Cost --}}
+                                <div>
+                                    <label for="shipping_cost" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                        Ongkir Fallback/Estimasi (Rp) <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="number"
+                                           id="shipping_cost"
+                                           name="shipping_cost"
+                                           value="{{ old('shipping_cost', $settings['shipping_cost'] ?? '10000') }}"
+                                           min="0"
+                                           step="1000"
+                                           placeholder="Contoh: 10000"
+                                           class="w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-orange-500 focus:ring-orange-500 px-4 py-2.5 transition duration-200">
+                                    @error('shipping_cost')
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    @enderror
+                                    <p class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
+                                        Digunakan sebagai estimasi di halaman cart dan fallback jika API gagal. Ongkir sebenarnya akan dihitung saat checkout berdasarkan alamat customer.
+                                    </p>
+                                </div>
+
+                                {{-- Info Box --}}
+                                <div class="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+                                    <div class="flex items-start gap-2.5">
+                                        <svg class="w-5 h-5 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <div class="text-xs text-amber-800 dark:text-amber-300 leading-relaxed">
+                                            <p class="font-semibold mb-1">Cara Penggunaan</p>
+                                            <ul class="list-disc list-inside space-y-0.5 text-amber-700 dark:text-amber-400">
+                                                <li>Daftar dan dapatkan API key di <strong>api.co.id</strong></li>
+                                                <li>Masukkan kode provinsi dan kota toko sebagai origin pengiriman</li>
+                                                <li>Sistem akan otomatis menghitung ongkir berdasarkan alamat customer</li>
+                                                <li>Produk dengan centang "Dikenakan Ongkos Kirim" akan dihitung ongkirnya</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         {{-- ==================== SECTION: Halaman Statis ==================== --}}
                         <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
                             <div class="flex items-center gap-3 mb-6">
@@ -548,6 +649,43 @@
 
                 removeBankAccount(index) {
                     this.bankAccounts.splice(index, 1);
+                }
+            };
+        }
+
+        function locationSelector() {
+            return {
+                selectedProvince: '{{ old('store_province_code', $settings['store_province_code']) }}',
+                selectedCity: '{{ old('store_city_code', $settings['store_city_code']) }}',
+                allCities: @json($cities),
+                filteredCities: [],
+
+                init() {
+                    // Filter cities on initialization if province is already selected
+                    if (this.selectedProvince) {
+                        this.filterCities();
+                    }
+                },
+
+                filterCities() {
+                    if (!this.selectedProvince) {
+                        this.filteredCities = [];
+                        this.selectedCity = '';
+                        return;
+                    }
+
+                    // Filter cities by selected province code
+                    // City code format: first 2 digits = province code (e.g., "1101" -> "11")
+                    this.filteredCities = this.allCities.filter(city => {
+                        const cityProvinceCode = city.code.substring(0, 2);
+                        return cityProvinceCode === this.selectedProvince;
+                    });
+
+                    // Reset city selection if the current city doesn't belong to the new province
+                    const cityExists = this.filteredCities.some(city => city.code === this.selectedCity);
+                    if (!cityExists) {
+                        this.selectedCity = '';
+                    }
                 }
             };
         }

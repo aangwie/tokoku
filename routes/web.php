@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\SettingController as AdminSettingController;
 use App\Http\Controllers\Admin\AdminProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\SystemUpdateController as AdminSystemUpdateController;
+use App\Http\Controllers\Admin\ShippingTestController as AdminShippingTestController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -111,6 +112,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Pengaturan Toko
     Route::get('/settings', [AdminSettingController::class, 'edit'])->name('settings.edit');
     Route::post('/settings', [AdminSettingController::class, 'update'])->name('settings.update');
+
+    // Test API Kurir
+    Route::get('/shipping/test', [AdminShippingTestController::class, 'index'])->name('shipping.test.index');
+    Route::post('/shipping/test', [AdminShippingTestController::class, 'test'])->name('shipping.test');
 
     // Pengaturan Profile Admin
     Route::get('/settings/profile', [AdminProfileController::class, 'edit'])->name('settings.profile.edit');

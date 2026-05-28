@@ -29,7 +29,7 @@
                                            :class="selectedAddress === {{ $sa->id }} ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20' : 'border-gray-200 dark:border-gray-700'">
                                         <div class="flex items-start gap-3">
                                             <input type="radio" name="address_choice" value="{{ $sa->id }}"
-                                                   @click="selectSaved({{ $sa->id }}, {{ json_encode($sa->recipient_name . ' (' . $sa->phone . ")\n" . $sa->full_address) }})"
+                                                   @click="selectSaved({{ $sa->id }}, {{ json_encode($sa->recipient_name . ' (' . $sa->phone . ")\n" . $sa->full_address) }}, '{{ $sa->city_code }}')"
                                                    class="mt-1 text-indigo-600 focus:ring-indigo-500"
                                                    {{ $sa->is_default ? 'checked' : '' }}>
                                             <div class="flex-1 min-w-0">
@@ -54,6 +54,9 @@
                         @error('shipping_address')
                             <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                         @enderror
+                        
+                        {{-- Hidden field for city_code (for dynamic shipping calculation) --}}
+                        <input type="hidden" name="city_code" x-ref="cityCodeInput" value="{{ old('city_code') }}">
                     </div>
 
                     {{-- Payment Gateway Selection --}}
@@ -189,14 +192,22 @@
                             if (defaultAddr && defaultAddr.id === this.selectedAddress) {
                                 this.$refs.addressInput.value = defaultAddr.recipient_name + ' (' + defaultAddr.phone + ')\n' + defaultAddr.full_address;
                                 this.$refs.addressInput.readOnly = true;
+                                // Set city_code for dynamic shipping calculation
+                                if (defaultAddr.city_code) {
+                                    this.$refs.cityCodeInput.value = defaultAddr.city_code;
+                                }
                             }
                         @endif
                     }
                 },
-                selectSaved(id, text) {
+                selectSaved(id, text, cityCode) {
                     this.selectedAddress = id;
                     this.$refs.addressInput.value = text;
                     this.$refs.addressInput.readOnly = true;
+                    // Set city_code for dynamic shipping calculation
+                    if (cityCode) {
+                        this.$refs.cityCodeInput.value = cityCode;
+                    }
                 }
             };
         }

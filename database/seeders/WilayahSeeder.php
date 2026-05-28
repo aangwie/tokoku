@@ -9,20 +9,37 @@ use App\Models\Province;
 use App\Models\City;
 use App\Models\District;
 use App\Models\Village;
+use App\Models\Setting;
 
 class WilayahSeeder extends Seeder
 {
+    protected $baseUrl = 'https://use.api.co.id/regional/indonesia';
+    protected $apiKey;
+
+    public function __construct()
+    {
+        // Get API key from settings or environment
+        $this->apiKey = Setting::get('shipping_api_key', env('SHIPPING_API_KEY'));
+    }
+
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        $this->command->info('🌏 Mulai import data wilayah Indonesia...');
+        if (!$this->apiKey) {
+            $this->command->error('❌ API Key tidak ditemukan! Silakan set SHIPPING_API_KEY di .env atau di Pengaturan Toko.');
+            $this->command->info('Contoh: SHIPPING_API_KEY=your_api_key_here');
+            return;
+        }
+
+        $this->command->info('🌏 Mulai import data wilayah Indonesia dari use.api.co.id...');
+        $this->command->info('🔑 Menggunakan API Key: ' . substr($this->apiKey, 0, 10) . '...');
         
         // Import Provinces
         $this->importProvinces();
         
-        // Import Cities
+        // Import Cities (Regencies)
         $this->importCities();
         
         // Import Districts
@@ -42,15 +59,28 @@ class WilayahSeeder extends Seeder
         $this->command->info('📍 Mengimport data provinsi...');
         
         try {
-            $response = Http::get('https://emsifa.github.io/api-wilayah-indonesia/api/provinces.json');
-            $provinces = $response->json();
+            $response = Http::withHeaders([
+                'x-api-co-id' => $this->apiKey,
+                'Accept' => 'application/json',
+            ])->timeout(30)->get($this->baseUrl . '/provinces');
+            
+            if (!$response->successful()) {
+                throw new \Exception('API Error: ' . $response->status() . ' - ' . $response->body());
+            }
+            
+            $data = $response->json();
+            $provinces = $data['data'] ?? $data; // Handle both wrapped and unwrapped responses
+            
+            if (empty($provinces)) {
+                throw new \Exception('No provinces data returned from API');
+            }
             
             $bar = $this->command->getOutput()->createProgressBar(count($provinces));
             $bar->start();
             
             foreach ($provinces as $province) {
                 Province::updateOrCreate(
-                    ['code' => $province['id']],
+                    ['code' => $province['code']],
                     ['name' => $province['name']]
                 );
                 $bar->advance();
@@ -62,6 +92,7 @@ class WilayahSeeder extends Seeder
             
         } catch (\Exception $e) {
             $this->command->error('✗ Gagal import provinsi: ' . $e->getMessage());
+            $this->command->warn('💡 Pastikan API Key valid dan endpoint tersedia');
         }
     }
 
@@ -77,12 +108,21 @@ class WilayahSeeder extends Seeder
         
         foreach ($provinces as $province) {
             try {
-                $response = Http::get("https://emsifa.github.io/api-wilayah-indonesia/api/regencies/{$province->code}.json");
-                $cities = $response->json();
+                $response = Http::withHeaders([
+                    'x-api-co-id' => $this->apiKey,
+                    'Accept' => 'application/json',
+                ])->timeout(30)->get($this->baseUrl . '/provinces/' . $province->code . '/regencies');
+                
+                if (!$response->successful()) {
+                    throw new \Exception('API Error: ' . $response->status());
+                }
+                
+                $data = $response->json();
+                $cities = $data['data'] ?? $data;
                 
                 foreach ($cities as $city) {
                     City::updateOrCreate(
-                        ['code' => $city['id']],
+                        ['code' => $city['code']],
                         [
                             'province_id' => $province->id,
                             'name' => $city['name']
@@ -115,12 +155,21 @@ class WilayahSeeder extends Seeder
         
         foreach ($cities as $city) {
             try {
-                $response = Http::timeout(30)->get("https://emsifa.github.io/api-wilayah-indonesia/api/districts/{$city->code}.json");
-                $districts = $response->json();
+                $response = Http::withHeaders([
+                    'x-api-co-id' => $this->apiKey,
+                    'Accept' => 'application/json',
+                ])->timeout(30)->get($this->baseUrl . '/regencies/' . $city->code . '/districts');
+                
+                if (!$response->successful()) {
+                    throw new \Exception('API Error: ' . $response->status());
+                }
+                
+                $data = $response->json();
+                $districts = $data['data'] ?? $data;
                 
                 foreach ($districts as $district) {
                     District::updateOrCreate(
-                        ['code' => $district['id']],
+                        ['code' => $district['code']],
                         [
                             'city_id' => $city->id,
                             'name' => $district['name']
@@ -156,12 +205,21 @@ class WilayahSeeder extends Seeder
         
         foreach ($districts as $district) {
             try {
-                $response = Http::timeout(30)->get("https://emsifa.github.io/api-wilayah-indonesia/api/villages/{$district->code}.json");
-                $villages = $response->json();
+                $response = Http::withHeaders([
+                    'x-api-co-id' => $this->apiKey,
+                    'Accept' => 'application/json',
+                ])->timeout(30)->get($this->baseUrl . '/districts/' . $district->code . '/villages');
+                
+                if (!$response->successful()) {
+                    throw new \Exception('API Error: ' . $response->status());
+                }
+                
+                $data = $response->json();
+                $villages = $data['data'] ?? $data;
                 
                 foreach ($villages as $village) {
                     Village::updateOrCreate(
-                        ['code' => $village['id']],
+                        ['code' => $village['code']],
                         [
                             'district_id' => $district->id,
                             'name' => $village['name']
