@@ -88,6 +88,30 @@
                             @enderror
                         </div>
 
+                        {{-- Shipping Cost --}}
+                        <div class="mb-8">
+                            <label for="shipping_cost" class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                                Ongkos Kirim
+                            </label>
+                            <div class="relative">
+                                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400 font-medium">Rp</span>
+                                <input
+                                    type="number"
+                                    name="shipping_cost"
+                                    id="shipping_cost"
+                                    value="{{ old('shipping_cost', $settings['shipping_cost'] ?? '0') }}"
+                                    min="0"
+                                    step="1000"
+                                    class="w-full rounded-xl border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white shadow-sm focus:border-indigo-500 focus:ring-indigo-500 transition duration-200 pl-12 pr-4 py-3"
+                                    placeholder="0"
+                                />
+                            </div>
+                            <p class="mt-2 text-xs text-gray-400 dark:text-gray-500">Biaya ongkos kirim yang akan dikenakan pada setiap pesanan. Masukkan 0 untuk ongkir gratis.</p>
+                            @error('shipping_cost')
+                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         {{-- Store Logo --}}
                         <div class="mb-8">
                             <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">

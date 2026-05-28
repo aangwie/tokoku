@@ -28,6 +28,7 @@ class SettingController extends Controller
             'store_address' => Setting::get('store_address', ''),
             'store_logo' => Setting::get('store_logo'),
             'payment_method' => Setting::get('payment_method', 'paymentgateway'),
+            'shipping_cost' => Setting::get('shipping_cost', '0'),
 
             // Bank Transfer settings
             'bank_accounts' => json_decode(Setting::get('bank_accounts', '[]'), true) ?: [],
@@ -56,6 +57,7 @@ class SettingController extends Controller
             'store_address' => 'nullable|string|max:500',
             'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,gif|max:1024',
             'payment_method' => 'nullable|in:paymentgateway,transfer',
+            'shipping_cost' => 'nullable|numeric|min:0',
 
             // Bank transfer validation
             'bank_accounts' => 'nullable|array',
@@ -85,6 +87,9 @@ class SettingController extends Controller
         // Update payment method
         $paymentMethod = $request->payment_method ?? 'paymentgateway';
         Setting::set('payment_method', $paymentMethod);
+
+        // Update shipping cost
+        Setting::set('shipping_cost', $request->input('shipping_cost', '0'));
 
         // Save bank accounts as JSON
         $bankAccounts = $request->input('bank_accounts', []);

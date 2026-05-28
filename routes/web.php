@@ -62,6 +62,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/invoice', [OrderController::class, 'downloadInvoice'])->name('orders.invoice');
+    Route::post('/orders/{order}/complete', [OrderController::class, 'complete'])->name('orders.complete');
 
     // Pengaturan Pelanggan
     Route::get('/settings', [CustomerSettingController::class, 'index'])->name('customer.settings');

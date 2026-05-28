@@ -35,10 +35,10 @@ class CartController extends Controller
             $totalWeight += $item['weight'] * $item['quantity'];
         }
 
-        // Hitung Ongkos Kirim: Rp 15.000 per 1000 gram (1 kg), dibulatkan ke atas. Minimal Rp 15.000 jika keranjang tidak kosong.
+        // Hitung Ongkos Kirim dari pengaturan admin
         $shippingCost = 0;
         if (count($cart) > 0) {
-            $shippingCost = max(15000, ceil($totalWeight / 1000) * 15000);
+            $shippingCost = (float) Setting::get('shipping_cost', '0');
         }
 
         // Terapkan kupon jika ada di sesi
@@ -229,7 +229,8 @@ class CartController extends Controller
             $totalWeight += $item['weight'] * $item['quantity'];
         }
 
-        $shippingCost = max(15000, ceil($totalWeight / 1000) * 15000);
+        // Ambil ongkos kirim dari pengaturan admin
+        $shippingCost = (float) Setting::get('shipping_cost', '0');
 
         $discountAmount = 0;
         $coupon = session()->get('coupon');

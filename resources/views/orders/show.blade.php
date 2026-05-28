@@ -13,14 +13,30 @@
                 Detail Pesanan <span class="text-indigo-600 dark:text-indigo-400">#{{ $order->order_number }}</span>
             </h1>
             
-            {{-- Print Invoice Button --}}
-            <a href="{{ route('orders.invoice', $order) }}" 
-               class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-sm">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
-                </svg>
-                Cetak Invoice
-            </a>
+            {{-- Action Buttons --}}
+            <div class="flex flex-wrap items-center gap-3">
+                {{-- Complete Order Button (only for shipping status) --}}
+                @if($order->status === 'shipping')
+                    <form id="complete-order-form" action="{{ route('orders.complete', $order) }}" method="POST">
+                        @csrf
+                        <button type="button" onclick="confirmCompleteOrder()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            Selesaikan Pesanan
+                        </button>
+                    </form>
+                @endif
+
+                {{-- Print Invoice Button --}}
+                <a href="{{ route('orders.invoice', $order) }}" 
+                   class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-sm hover:shadow-md transition-all duration-200 text-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                    </svg>
+                    Cetak Invoice
+                </a>
+            </div>
         </div>
 
         <div class="space-y-6">
@@ -62,7 +78,14 @@
                     <div>
                         <span class="block text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500 mb-1">No. Resi</span>
                         @if($order->tracking_number)
-                            <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ $order->tracking_number }}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">{{ $order->tracking_number }}</span>
+                                <button type="button" onclick="copyTrackingNumber('{{ $order->tracking_number }}')" class="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition" title="Salin nomor resi">
+                                    <svg class="w-4 h-4 text-gray-400 hover:text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                    </svg>
+                                </button>
+                            </div>
                         @else
                             <span class="text-sm text-gray-400 dark:text-gray-500 italic">Belum tersedia</span>
                         @endif
@@ -276,7 +299,13 @@
                         @endif
                         <div class="flex justify-between text-gray-600 dark:text-gray-400">
                             <span>Ongkos Kirim</span>
-                            <span class="font-medium text-gray-900 dark:text-white">Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}</span>
+                            <span class="font-medium text-gray-900 dark:text-white">
+                                @if($order->shipping_cost > 0)
+                                    Rp {{ number_format($order->shipping_cost, 0, ',', '.') }}
+                                @else
+                                    <span class="text-green-600 dark:text-green-400 font-semibold">Gratis</span>
+                                @endif
+                            </span>
                         </div>
                         <div class="border-t border-gray-200 dark:border-gray-600 pt-3 flex justify-between">
                             <span class="text-base font-bold text-gray-900 dark:text-white">Total</span>
@@ -380,6 +409,51 @@
             }).catch(err => {
                 console.error('Gagal menyalin nomor rekening:', err);
             });
+        }
+
+        function copyTrackingNumber(trackingNumber) {
+            navigator.clipboard.writeText(trackingNumber).then(() => {
+                if (window.Swal) {
+                    window.Swal.fire({
+                        title: 'Tersalin!',
+                        text: 'Nomor resi berhasil disalin ke clipboard.',
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 2000,
+                        timerProgressBar: true,
+                    });
+                } else {
+                    alert('Nomor resi berhasil disalin!');
+                }
+            }).catch(err => {
+                console.error('Gagal menyalin nomor resi:', err);
+            });
+        }
+
+        function confirmCompleteOrder() {
+            if (window.Swal) {
+                window.Swal.fire({
+                    title: 'Selesaikan Pesanan?',
+                    text: 'Apakah Anda yakin pesanan sudah diterima dan ingin menyelesaikan pesanan ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#16a34a',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, Selesaikan',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('complete-order-form').submit();
+                    }
+                });
+            } else {
+                if (confirm('Apakah Anda yakin pesanan sudah diterima dan ingin menyelesaikan pesanan ini?')) {
+                    document.getElementById('complete-order-form').submit();
+                }
+            }
         }
     </script>
 </x-app-layout>

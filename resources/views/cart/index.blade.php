@@ -133,7 +133,13 @@
                             @endif
                             <div class="flex justify-between text-gray-600 dark:text-gray-400">
                                 <span>Ongkos Kirim ({{ number_format($totalWeight, 0, ',', '.') }}g)</span>
-                                <span>Rp {{ number_format($shippingCost, 0, ',', '.') }}</span>
+                                <span>
+                                    @if($shippingCost > 0)
+                                        Rp {{ number_format($shippingCost, 0, ',', '.') }}
+                                    @else
+                                        <span class="text-green-600 dark:text-green-400 font-semibold">Gratis</span>
+                                    @endif
+                                </span>
                             </div>
                             <div class="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between text-lg font-bold text-gray-900 dark:text-white">
                                 <span>Total</span>

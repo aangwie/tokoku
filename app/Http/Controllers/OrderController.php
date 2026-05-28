@@ -125,4 +125,29 @@ class OrderController extends Controller
         
         return $pdf->download($filename);
     }
+
+    /**
+     * Mark order as completed by customer.
+     * Customer can only complete orders that are in 'shipping' status.
+     *
+     * @param Order $order
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function complete(Order $order)
+    {
+        // Pastikan user hanya bisa mengakses pesanannya sendiri
+        if ($order->user_id != Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+
+        // Hanya pesanan dengan status 'shipping' yang bisa diselesaikan
+        if ($order->status !== 'shipping') {
+            return redirect()->back()->with('error', 'Pesanan hanya bisa diselesaikan jika sudah dalam status pengiriman.');
+        }
+
+        // Update status menjadi completed
+        $order->update(['status' => 'completed']);
+
+        return redirect()->back()->with('success', 'Pesanan berhasil diselesaikan. Terima kasih!');
+    }
 }
