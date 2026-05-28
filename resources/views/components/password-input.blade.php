@@ -3,13 +3,13 @@
 <div class="relative">
     <input 
         @disabled($disabled) 
-        {{ $attributes->merge(['class' => 'border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm pr-10']) }}
+        {{ $attributes->merge(['class' => 'border-cyber-purple/30 bg-cyber-dark/40 text-gray-300 focus:border-cyber-cyan focus:ring-cyber-cyan/50 rounded-md shadow-sm pr-10 placeholder-gray-500']) }}
         type="password"
     >
     
     <button 
         type="button" 
-        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+        class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-cyber-cyan transition-all duration-200"
         onclick="togglePasswordVisibility(this)"
     >
         <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

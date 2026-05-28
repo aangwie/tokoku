@@ -3,9 +3,9 @@
 @endphp
 
 <!-- Desktop Sidebar -->
-<aside :class="[sidebarOpen ? 'lg:flex' : 'hidden lg:hidden', sidebarMinimized ? 'lg:w-20' : 'lg:w-64']" class="lg:flex-col lg:fixed lg:inset-y-0 lg:z-30 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 transition-all duration-300">
+<aside :class="[sidebarOpen ? 'lg:flex' : 'hidden lg:hidden', sidebarMinimized ? 'lg:w-20' : 'lg:w-64']" class="lg:flex-col lg:fixed lg:inset-y-0 lg:z-30 bg-white dark:bg-cyber-dark/60 backdrop-blur-xl border-r border-gray-200 dark:border-cyber-purple/30 text-gray-700 dark:text-gray-300 transition-all duration-300">
     <!-- Header -->
-    <div class="flex items-center border-b border-gray-200 dark:border-gray-700 h-16 px-6 shrink-0" :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
+    <div class="flex items-center border-b border-gray-200 dark:border-cyber-purple/30 h-16 px-6 shrink-0" :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
         <x-application-logo class="h-9 w-auto object-contain rounded-md shrink-0" />
         <span x-show="!sidebarMinimized" class="font-bold text-gray-900 dark:text-white text-lg truncate">{{ $storeName }}</span>
     </div>
@@ -13,12 +13,12 @@
     <!-- Links -->
     <div class="flex-grow overflow-y-auto px-4 py-6 space-y-1.5">
         <!-- Lihat Toko -->
-        <a href="{{ route('home') }}" class="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white" :class="sidebarMinimized ? 'justify-center' : 'gap-3'" target="_blank">
+        <a href="{{ route('home') }}" class="flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-cyber-purple/10 hover:text-gray-900 dark:hover:text-cyber-cyan transition-colors duration-200" :class="sidebarMinimized ? 'justify-center' : 'gap-3'" target="_blank">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
             <span x-show="!sidebarMinimized">Lihat Toko</span>
         </a>
 
-        <div class="h-px bg-gray-200 dark:bg-gray-700 my-3"></div>
+        <div class="h-px bg-gray-200 dark:bg-cyber-purple/20 my-3"></div>
 
         @if(Auth::user()->role === 'admin')
             <!-- Dashboard Admin - Analisis Penjualan -->
@@ -27,7 +27,7 @@
                 <span x-show="!sidebarMinimized">Dashboard</span>
             </a>
             <div class="pt-4 pb-2" x-show="!sidebarMinimized">
-                <p class="px-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Menu Admin</p>
+                <p class="px-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase">Menu Admin</p>
             </div>
 
             <!-- Kategori -->
@@ -78,7 +78,7 @@
                 <span x-show="!sidebarMinimized">Dashboard</span>
             </a>
             <div class="pt-4 pb-2" x-show="!sidebarMinimized">
-                <p class="px-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Menu Pelanggan</p>
+                <p class="px-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase">Menu Pelanggan</p>
             </div>
 
             <!-- Pesanan Saya -->
@@ -95,8 +95,8 @@
         @endif
 
         <!-- Collapse Button -->
-        <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
-            <button @click="sidebarMinimized = !sidebarMinimized; localStorage.setItem('sidebarMinimized', sidebarMinimized)" class="w-full flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white" :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
+        <div class="pt-4 border-t border-gray-200 dark:border-cyber-purple/20">
+            <button @click="sidebarMinimized = !sidebarMinimized; localStorage.setItem('sidebarMinimized', sidebarMinimized)" class="w-full flex items-center px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-cyber-purple/10 hover:text-gray-900 dark:hover:text-cyber-cyan transition-colors duration-200" :class="sidebarMinimized ? 'justify-center' : 'gap-3'">
                 <svg x-show="!sidebarMinimized" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/></svg>
                 <svg x-show="sidebarMinimized" class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
                 <span x-show="!sidebarMinimized">Sembunyikan Menu</span>
@@ -105,7 +105,7 @@
     </div>
 
     <!-- Footer -->
-    <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-4 shrink-0">
+    <div class="border-t border-gray-200 dark:border-cyber-purple/20 px-4 py-4 shrink-0">
         <div class="flex items-center justify-between gap-3" :class="sidebarMinimized ? 'flex-col' : ''">
             <div class="flex-1 min-w-0" x-show="!sidebarMinimized">
                 <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ Auth::user()->name }}</p>
@@ -113,7 +113,7 @@
             </div>
             <form method="POST" action="{{ route('logout') }}" class="shrink-0">
                 @csrf
-                <button type="submit" class="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-400 dark:hover:text-red-400">
+                <button type="submit" class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors duration-200">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                 </button>
             </form>
@@ -124,26 +124,26 @@
 <!-- Mobile Sidebar -->
 <div class="lg:hidden">
     <div x-show="sidebarOpen" @click="sidebarOpen = false" class="fixed inset-0 z-40 bg-black/50"></div>
-    <div x-show="sidebarOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 overflow-y-auto flex flex-col">
+    <div x-show="sidebarOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-cyber-dark/95 backdrop-blur-xl border-r border-gray-200 dark:border-cyber-purple/30 overflow-y-auto flex flex-col">
         <!-- Header -->
-        <div class="flex items-center justify-between border-b border-gray-200 dark:border-gray-700 h-16 px-6 shrink-0">
+        <div class="flex items-center justify-between border-b border-gray-200 dark:border-cyber-purple/30 h-16 px-6 shrink-0">
             <div class="flex items-center gap-3">
                 <x-application-logo class="h-9 w-auto object-contain rounded-md" />
                 <span class="font-bold text-white text-lg">{{ $storeName }}</span>
             </div>
-            <button @click="sidebarOpen = false" class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <button @click="sidebarOpen = false" class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-cyber-purple/10 hover:text-gray-900 dark:hover:text-cyber-cyan transition-colors duration-200">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
         </div>
 
         <!-- Links -->
         <div class="flex-grow overflow-y-auto px-4 py-6 space-y-1.5">
-            <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white">
+            <a href="{{ route('home') }}" class="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-cyber-purple/10 hover:text-gray-900 dark:hover:text-cyber-cyan transition-colors duration-200">
                 <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                 <span>Lihat Toko</span>
             </a>
 
-            <div class="h-px bg-gray-200 dark:bg-gray-700 my-3"></div>
+            <div class="h-px bg-gray-200 dark:bg-cyber-purple/20 my-3"></div>
 
             @if(Auth::user()->role === 'admin')
                 <!-- Dashboard Admin -->
@@ -152,7 +152,7 @@
                     <span>Dashboard</span>
                 </a>
                 <div class="pt-4 pb-2">
-                    <p class="px-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Menu Admin</p>
+                    <p class="px-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase">Menu Admin</p>
                 </div>
                 <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('admin.categories.*') ? 'bg-cyan-500/10 text-cyan-400 font-bold border-l-2 border-cyan-400 pl-3.5 pr-4' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-4' }}">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
@@ -189,7 +189,7 @@
                     <span>Dashboard</span>
                 </a>
                 <div class="pt-4 pb-2">
-                    <p class="px-4 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase">Menu Pelanggan</p>
+                    <p class="px-4 text-xs font-bold text-gray-600 dark:text-gray-400 uppercase">Menu Pelanggan</p>
                 </div>
                 <a href="{{ route('orders.index') }}" class="flex items-center gap-3 py-2.5 rounded-lg text-sm {{ request()->routeIs('orders.*') ? 'bg-cyan-500/10 text-cyan-400 font-bold border-l-2 border-cyan-400 pl-3.5 pr-4' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-4' }}">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
@@ -203,10 +203,10 @@
         </div>
 
         <!-- Footer -->
-        <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-4 shrink-0">
+        <div class="border-t border-gray-200 dark:border-cyber-purple/20 px-4 py-4 shrink-0">
             <form method="POST" action="{{ route('logout') }}" class="w-full">
                 @csrf
-                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-red-400">
+                <button type="submit" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors duration-200">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                     <span>Keluar</span>
                 </button>

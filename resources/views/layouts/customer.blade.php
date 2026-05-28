@@ -24,14 +24,14 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <body class="font-sans antialiased bg-gray-50 dark:bg-cyber-darker text-gray-900 dark:text-gray-300">
         @php
             $storeName = \App\Models\Setting::get('store_name', config('app.name', 'Toko Online'));
             $storeLogo = \App\Models\Setting::get('store_logo');
         @endphp
-        <div class="min-h-screen flex flex-col bg-gradient-to-br from-[#91ebff] to-white">
+        <div class="min-h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-cyber-darker dark:via-cyber-dark dark:to-cyber-darker">
             <!-- Navbar -->
-            <nav class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-700 sticky top-0 z-50 shadow-sm">
+            <nav class="bg-white/80 dark:bg-cyber-dark/60 backdrop-blur-xl border-b border-gray-200 dark:border-cyber-purple/30 sticky top-0 z-50 shadow-sm dark:shadow-neon-purple-sm">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
                         <div class="flex items-center">
@@ -40,7 +40,7 @@
                                 @if($storeLogo)
                                     <img src="{{ str_starts_with($storeLogo, 'data:') ? $storeLogo : asset($storeLogo) }}" alt="{{ $storeName }}" class="h-9 w-auto object-contain rounded-md" />
                                 @endif
-                                <span class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-650 via-indigo-500 to-[#67dbf5] dark:from-[#91ebff] dark:to-white">
+                                <span class="text-xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyber-purple via-cyber-cyan to-cyber-purple">
                                     {{ $storeName }}
                                 </span>
                             </a>
@@ -49,7 +49,7 @@
                         <!-- Right Side Navbar -->
                         <div class="flex items-center gap-4">
                             <!-- Dark Mode Toggle -->
-                            <button @click="isDarkMode = !isDarkMode; localStorage.setItem('darkMode', isDarkMode)" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none transition duration-150" title="Toggle Dark Mode">
+                            <button @click="isDarkMode = !isDarkMode; localStorage.setItem('darkMode', isDarkMode)" class="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-cyber-purple/10 hover:text-gray-900 dark:hover:text-cyber-cyan focus:outline-none transition-all duration-200" title="Toggle Dark Mode">
                                 <svg x-show="!isDarkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                                 </svg>
@@ -59,7 +59,7 @@
                             </button>
 
                             <!-- Cart Icon -->
-                            <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition duration-150" title="Keranjang Belanja">
+                            <a href="{{ route('cart.index') }}" class="relative p-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-cyber-cyan transition-all duration-200" title="Keranjang Belanja">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                                 </svg>
@@ -78,7 +78,7 @@
                                         ->count();
                                 @endphp
                                 @if($shippingCount > 0)
-                                    <a href="{{ route('orders.index') }}" class="relative p-2 text-blue-500 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-200 transition duration-150" title="Pesanan Sedang Dikirim">
+                                    <a href="{{ route('orders.index') }}" class="relative p-2 text-blue-600 dark:text-cyber-cyan hover:text-blue-800 dark:hover:text-cyber-purple transition-all duration-200" title="Pesanan Sedang Dikirim">
                                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"></path>
                                         </svg>
@@ -92,15 +92,15 @@
                             <!-- Authentication Links -->
                             @auth
                                 <div class="hidden sm:flex sm:items-center sm:ms-3">
-                                    <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition duration-150 mr-4">
+                                    <a href="{{ route('dashboard') }}" class="text-sm font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all duration-200 mr-4">
                                         {{ __('Dashboard') }}
                                     </a>
                                     @if(Auth::user()->role === 'admin')
-                                        <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:underline transition duration-150 mr-4">
+                                        <a href="{{ route('admin.dashboard') }}" class="text-sm font-medium text-blue-600 dark:text-cyber-cyan hover:text-blue-800 dark:hover:text-cyber-purple hover:underline transition-all duration-200 mr-4">
                                             Admin
                                         </a>
                                     @else
-                                        <a href="{{ route('orders.index') }}" class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition duration-150 mr-4">
+                                        <a href="{{ route('orders.index') }}" class="text-sm font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all duration-200 mr-4">
                                             Riwayat Belanja
                                         </a>
                                     @endif
@@ -113,8 +113,8 @@
                                     </form>
                                 </div>
                             @else
-                                <a href="{{ route('login') }}" class="text-sm font-medium text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition duration-150">Log in</a>
-                                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md shadow-sm transition duration-150">Register</a>
+                                <a href="{{ route('login') }}" class="text-sm font-medium text-gray-700 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-all duration-200">Log in</a>
+                                <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-500 dark:from-cyber-purple dark:to-cyber-cyan hover:shadow-lg dark:hover:shadow-neon-cyan rounded-lg transition-all duration-200">Register</a>
                             @endauth
                         </div>
                     </div>
@@ -127,7 +127,7 @@
             </main>
 
             <!-- Footer -->
-            <footer class="bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 py-8 mt-12">
+            <footer class="bg-white dark:bg-cyber-dark/60 backdrop-blur-xl border-t border-gray-200 dark:border-cyber-purple/30 py-8 mt-12">
                 <div class="max-w-7xl mx-auto px-4">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                         <!-- Store Info -->
@@ -141,7 +141,7 @@
                             @endphp
                             @if($storeAddress)
                                 <div class="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                                    <svg class="w-5 h-5 text-gray-500 dark:text-gray-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-cyber-cyan mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                     </svg>
@@ -163,7 +163,7 @@
                                     </svg>
                                     <span>WhatsApp</span>
                                 </a>
-                                <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                                <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">
                                     {{ $storeWhatsApp }}
                                 </p>
                             @endif
@@ -173,10 +173,10 @@
                         <div class="text-center md:text-right">
                             <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Informasi</h3>
                             <div class="flex flex-col gap-2 text-sm">
-                                <a href="{{ route('pages.terms') }}" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-150">
+                                <a href="{{ route('pages.terms') }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-cyber-cyan transition-all duration-200">
                                     Syarat & Ketentuan
                                 </a>
-                                <a href="{{ route('pages.refund-policy') }}" class="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition duration-150">
+                                <a href="{{ route('pages.refund-policy') }}" class="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-cyber-cyan transition-all duration-200">
                                     Kebijakan Pengembalian Dana
                                 </a>
                             </div>
@@ -184,8 +184,8 @@
                     </div>
                     
                     <!-- Copyright -->
-                    <div class="pt-6 border-t border-gray-200 dark:border-gray-700 text-center">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                    <div class="pt-6 border-t border-gray-200 dark:border-cyber-purple/20 text-center">
+                        <p class="text-sm text-gray-600 dark:text-gray-400">
                             &copy; {{ date('Y') }} {{ $storeName }}. All rights reserved.
                         </p>
                     </div>
